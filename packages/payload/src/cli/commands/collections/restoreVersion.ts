@@ -1,19 +1,6 @@
+import { restoreVersionLocalInputSchema } from '../../../collections/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
-import { strictObject } from '../../zod.js'
-import {
-  collectionSlugSchema,
-  depthSchema,
-  fallbackLocaleSchema,
-  idSchema,
-  localeSchema,
-  parseFallbackLocale,
-  parseID,
-  parseJSON,
-  populateSchema,
-  selectSchema,
-  showHiddenFieldsSchema,
-  writeDraftSchema,
-} from '../data/input.js'
+import { parseFallbackLocale, parseID, parseJSON } from '../data/input.js'
 import { getReadOptions, printJSON } from '../data/utilities.js'
 
 export const createRestoreVersionCommand = defineCLICommand({
@@ -40,15 +27,5 @@ export const createRestoreVersionCommand = defineCLICommand({
     return { result }
   },
   helpGroup: 'Data commands',
-  input: strictObject({
-    id: idSchema,
-    slug: collectionSlugSchema,
-    depth: depthSchema,
-    draft: writeDraftSchema,
-    fallbackLocale: fallbackLocaleSchema,
-    locale: localeSchema,
-    populate: populateSchema,
-    select: selectSchema,
-    showHiddenFields: showHiddenFieldsSchema,
-  }),
+  input: restoreVersionLocalInputSchema,
 })

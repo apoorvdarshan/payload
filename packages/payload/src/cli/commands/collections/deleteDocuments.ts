@@ -1,33 +1,9 @@
-import * as z from 'zod/mini'
+import type { Payload } from '../../../index.js'
 
-import type { Payload, Where } from '../../../index.js'
-
+import { deleteDocumentsInputSchema } from '../../../collections/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
-import { strictObject } from '../../zod.js'
-import {
-  collectionSlugSchema,
-  depthSchema,
-  fallbackLocaleSchema,
-  idSchema,
-  localeSchema,
-  parseFallbackLocale,
-  parseID,
-  parseJSON,
-  whereSchema,
-} from '../data/input.js'
-import { printJSON, requireIDOrWhere } from '../data/utilities.js'
-
-const input = strictObject(
-  {
-    id: z.optional(idSchema),
-    slug: collectionSlugSchema,
-    depth: depthSchema,
-    fallbackLocale: fallbackLocaleSchema,
-    locale: localeSchema,
-    where: whereSchema,
-  },
-  z.superRefine(requireIDOrWhere),
-)
+import { parseFallbackLocale, parseID, parseJSON } from '../data/input.js'
+import { printJSON } from '../data/utilities.js'
 
 export const createDeleteDocumentsCommand = defineCLICommand({
   cli: {
@@ -45,7 +21,7 @@ export const createDeleteDocumentsCommand = defineCLICommand({
       fallbackLocale: args.fallbackLocale,
       locale: args.locale,
       overrideAccess: true,
-      where: args.where as undefined | Where,
+      where: args.where,
     } as Parameters<Payload['delete']>[0])
 
     if (!isJSON) {
@@ -55,5 +31,5 @@ export const createDeleteDocumentsCommand = defineCLICommand({
     return { result }
   },
   helpGroup: 'Data commands',
-  input,
+  input: deleteDocumentsInputSchema,
 })

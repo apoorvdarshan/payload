@@ -1,14 +1,6 @@
-import type { Where } from '../../../index.js'
-
+import { countDocumentsInputSchema } from '../../../collections/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
-import { strictObject } from '../../zod.js'
-import {
-  collectionSlugSchema,
-  localeSchema,
-  parseJSON,
-  trashSchema,
-  whereSchema,
-} from '../data/input.js'
+import { parseJSON } from '../data/input.js'
 import { printJSON } from '../data/utilities.js'
 
 export const createCountDocumentsCommand = defineCLICommand({
@@ -23,7 +15,7 @@ export const createCountDocumentsCommand = defineCLICommand({
       locale: args.locale,
       overrideAccess: true,
       trash: args.trash,
-      where: args.where as undefined | Where,
+      where: args.where,
     })
 
     if (!isJSON) {
@@ -33,10 +25,5 @@ export const createCountDocumentsCommand = defineCLICommand({
     return { result }
   },
   helpGroup: 'Data commands',
-  input: strictObject({
-    slug: collectionSlugSchema,
-    locale: localeSchema,
-    trash: trashSchema,
-    where: whereSchema,
-  }),
+  input: countDocumentsInputSchema,
 })

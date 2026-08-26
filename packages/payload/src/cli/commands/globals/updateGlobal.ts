@@ -1,23 +1,8 @@
 import type { PopulateType, SelectType } from '../../../index.js'
 
+import { updateGlobalLocalInputSchema } from '../../../globals/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
-import { strictObject } from '../../zod.js'
-import {
-  dataSchema,
-  depthSchema,
-  fallbackLocaleSchema,
-  globalSlugSchema,
-  localeSchema,
-  overrideLockSchema,
-  parseFallbackLocale,
-  parseJSON,
-  populateSchema,
-  publishAllLocalesSchema,
-  selectSchema,
-  showHiddenFieldsSchema,
-  unpublishAllLocalesSchema,
-  writeDraftSchema,
-} from '../data/input.js'
+import { parseFallbackLocale, parseJSON } from '../data/input.js'
 import { prepareGlobalData, printJSON } from '../data/utilities.js'
 
 export const createUpdateGlobalCommand = defineCLICommand({
@@ -54,18 +39,5 @@ export const createUpdateGlobalCommand = defineCLICommand({
     return { result }
   },
   helpGroup: 'Data commands',
-  input: strictObject({
-    slug: globalSlugSchema,
-    data: dataSchema,
-    depth: depthSchema,
-    draft: writeDraftSchema,
-    fallbackLocale: fallbackLocaleSchema,
-    locale: localeSchema,
-    overrideLock: overrideLockSchema,
-    populate: populateSchema,
-    publishAllLocales: publishAllLocalesSchema,
-    select: selectSchema,
-    showHiddenFields: showHiddenFieldsSchema,
-    unpublishAllLocales: unpublishAllLocalesSchema,
-  }),
+  input: updateGlobalLocalInputSchema,
 })

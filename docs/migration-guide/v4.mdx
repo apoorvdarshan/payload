@@ -63,7 +63,8 @@ In Payload 4.0, define a real CLI command instead:
 
 ```ts
 // seed.ts
-import { defineCLICommand, strictObject, z } from 'payload/cli'
+import { strictObject, z } from 'payload'
+import { defineCLICommand } from 'payload/cli'
 
 export const seedCommand = defineCLICommand({
   description: 'Seed the database.',
@@ -1740,7 +1741,7 @@ const result = await req.payload.find({
 })
 ```
 
-For custom collection and global tools, do not add `collectionSlug` / `globalSlug` yourself. Payload adds the slug input to the MCP schema automatically, and the handler receives the resolved slug as a top-level argument.
+For custom collection and global tools, do not add `slug` yourself. Payload adds it to the MCP schema automatically, and the handler receives the resolved slug as a top-level argument.
 
 ```ts
 defineCollectionTool({
@@ -1748,12 +1749,16 @@ defineCollectionTool({
   input: z.object({
     id: z.string(),
   }),
-}).handler(async ({ collectionSlug, input, req }) => {
-  // collectionSlug is resolved from the tool call
+}).handler(async ({ slug, input, req }) => {
+  // slug is resolved from the tool call
 })
 ```
 
-**Built-in collection tools are now generic.** Per-collection names like `createPosts` / `updatePosts` were replaced by `createDocument` / `updateDocument`. Pass the target collection as `collectionSlug`; document fields live under `data` alongside options like `depth`, `draft` and `locale`. For update and delete calls, pass `id` or `where` as top-level arguments. `_status`, `id`, `createdAt` and `updatedAt` are no longer accepted inside `data`; set publish state with a custom tool if you need to.
+**Built-in collection tools are now generic.** Per-collection names like `createPosts` / `updatePosts` were replaced by `createDocument` / `updateDocument`. Pass the target collection as `slug`; document fields live under `data` alongside options like `depth`, `draft` and `locale`. For update and delete calls, pass `id` or `where` as top-level arguments. `_status`, `id`, `createdAt` and `updatedAt` are no longer accepted inside `data`; set publish state with a custom tool if you need to.
+
+The built-in data CLI commands and MCP tools now share their core input schemas from `payload`.
+Shell arguments, JSON input, and MCP calls all use `slug`. Trusted Local API options such as `showHiddenFields` and
+`overwriteExistingFiles` remain available to the local CLI but are not exposed through MCP.
 
 ```ts
 // arguments to a `createDocument` tool call
@@ -1762,10 +1767,10 @@ defineCollectionTool({
 { title: 'Hello', _status: 'draft', draft: true, depth: 2 }
 
 // after
-{ collectionSlug: 'posts', data: { title: 'Hello' }, draft: true, depth: 2 }
+{ slug: 'posts', data: { title: 'Hello' }, draft: true, depth: 2 }
 ```
 
-**Auth tools are per-collection and opt-in.** The old `experimental.tools.auth` block is gone. Opt in per auth collection via its `tools` map, and pass the target auth collection as `collectionSlug`. Like every MCP item, auth tools now use default MCP access unless you provide an `access` callback, so unauthenticated auth tools such as `login` need `access: () => true`.
+**Auth tools are per-collection and opt-in.** The old `experimental.tools.auth` block is gone. Opt in per auth collection via its `tools` map, and pass the target auth collection as `slug`. Like every MCP item, auth tools now use default MCP access unless you provide an `access` callback, so unauthenticated auth tools such as `login` need `access: () => true`.
 
 ```diff
 - mcpPlugin({ experimental: { tools: { auth: { enabled: true } } } })
@@ -1823,7 +1828,7 @@ Because the `payload-mcp-api-keys` collection config was removed, run your norma
 
 By default, MCP items require an authenticated user. Built-in collection and global tools also include Payload permission checks in their default `access` callbacks. If you provide an `access` callback for a built-in tool, it replaces the default callback.
 
-**Dependencies.** The plugin now builds on `@modelcontextprotocol/server` instead of `@modelcontextprotocol/sdk` + `mcp-handler`, and moved to `zod` v4. If your custom tools import `zod` directly, make sure it resolves to v4.
+**Dependencies.** The plugin now builds on `@modelcontextprotocol/server` instead of `@modelcontextprotocol/sdk` + `mcp-handler`. It no longer depends on Zod directly; its built-in tools use the Zod Mini export from `payload`. If your custom tools use regular Zod, install Zod v4 in your project and import it directly.
 
 ### `@payloadcms/ui/scss` export removed and legacy `--theme-*` tokens retired
 

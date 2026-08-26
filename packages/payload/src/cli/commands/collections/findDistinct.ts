@@ -1,22 +1,8 @@
-import type { PopulateType, Where } from '../../../index.js'
+import type { PopulateType } from '../../../index.js'
 
+import { findDistinctLocalInputSchema } from '../../../collections/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
-import { strictObject } from '../../zod.js'
-import {
-  collectionSlugSchema,
-  depthSchema,
-  fieldSchema,
-  limitSchema,
-  localeSchema,
-  pageSchema,
-  parseJSON,
-  parseSort,
-  populateSchema,
-  showHiddenFieldsSchema,
-  sortSchema,
-  trashSchema,
-  whereSchema,
-} from '../data/input.js'
+import { parseJSON, parseSort } from '../data/input.js'
 import { printJSON } from '../data/utilities.js'
 
 export const createFindDistinctCommand = defineCLICommand({
@@ -40,7 +26,7 @@ export const createFindDistinctCommand = defineCLICommand({
       showHiddenFields: args.showHiddenFields,
       sort: args.sort,
       trash: args.trash,
-      where: args.where as undefined | Where,
+      where: args.where,
     })
 
     if (!isJSON) {
@@ -50,17 +36,5 @@ export const createFindDistinctCommand = defineCLICommand({
     return { result }
   },
   helpGroup: 'Data commands',
-  input: strictObject({
-    slug: collectionSlugSchema,
-    depth: depthSchema,
-    field: fieldSchema,
-    limit: limitSchema,
-    locale: localeSchema,
-    page: pageSchema,
-    populate: populateSchema,
-    showHiddenFields: showHiddenFieldsSchema,
-    sort: sortSchema,
-    trash: trashSchema,
-    where: whereSchema,
-  }),
+  input: findDistinctLocalInputSchema,
 })

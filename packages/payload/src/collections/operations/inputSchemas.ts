@@ -1,0 +1,282 @@
+/**
+ * Shared input schemas for collection data commands.
+ *
+ * The Payload CLI and MCP plugin use these schemas so they accept and validate the same input.
+ * Local variants include trusted options that should only be available to local callers.
+ */
+import * as z from 'zod/mini'
+
+import {
+  dataSchema,
+  defaultLimitSchema,
+  defaultPageSchema,
+  depthSchema,
+  draftSchema,
+  fallbackLocaleSchema,
+  fieldSchema,
+  idSchema,
+  joinsSchema,
+  limitSchema,
+  localeSchema,
+  overrideLockSchema,
+  overwriteExistingFilesSchema,
+  pageSchema,
+  paginationSchema,
+  populateSchema,
+  publishAllLocalesSchema,
+  requireIDOrWhere,
+  selectedLocalesSchema,
+  selectSchema,
+  showHiddenFieldsSchema,
+  slugSchema,
+  sortSchema,
+  trashSchema,
+  unpublishAllLocalesSchema,
+  whereSchema,
+  writeDraftSchema,
+} from '../../utilities/sharedInputSchemas.js'
+import { strictObject } from '../../utilities/zod.js'
+
+export const countDocumentsInputSchema = strictObject({
+  slug: slugSchema,
+  locale: localeSchema,
+  trash: trashSchema,
+  where: whereSchema,
+})
+
+export const countVersionsInputSchema = strictObject({
+  slug: slugSchema,
+  locale: localeSchema,
+  where: whereSchema,
+})
+
+const getCreateDocumentsInputShape = <TFile extends z.core.$ZodType>({
+  file,
+}: {
+  file: TFile
+}) => ({
+  slug: slugSchema,
+  depth: depthSchema,
+  documents: z
+    .array(
+      z.strictObject({
+        data: dataSchema,
+        file: z.optional(file),
+      }),
+    )
+    .check(z.minLength(1), z.describe('Documents to create, in order.')),
+  draft: writeDraftSchema,
+  fallbackLocale: fallbackLocaleSchema,
+  locale: localeSchema,
+  populate: populateSchema,
+  publishAllLocales: publishAllLocalesSchema,
+  select: selectSchema,
+})
+
+/** Safe for remote interfaces. Excludes trusted Local API options. */
+export const createDocumentsInputSchema = <TFile extends z.core.$ZodType>({
+  file,
+}: {
+  file: TFile
+}) => strictObject(getCreateDocumentsInputShape({ file }))
+
+/** For trusted local callers only. Includes file overwrites and hidden fields. */
+export const createDocumentsLocalInputSchema = <TFile extends z.core.$ZodType>({
+  file,
+}: {
+  file: TFile
+}) =>
+  strictObject({
+    ...getCreateDocumentsInputShape({ file }),
+    overwriteExistingFiles: overwriteExistingFilesSchema,
+    showHiddenFields: showHiddenFieldsSchema,
+  })
+
+export const deleteDocumentsInputSchema = strictObject(
+  {
+    id: z.optional(idSchema),
+    slug: slugSchema,
+    depth: depthSchema,
+    fallbackLocale: fallbackLocaleSchema,
+    locale: localeSchema,
+    where: whereSchema,
+  },
+  z.superRefine(requireIDOrWhere),
+)
+
+const duplicateDocumentInputShape = {
+  id: idSchema,
+  slug: slugSchema,
+  data: z.optional(dataSchema),
+  depth: depthSchema,
+  draft: writeDraftSchema,
+  fallbackLocale: fallbackLocaleSchema,
+  locale: localeSchema,
+  populate: populateSchema,
+  select: selectSchema,
+  selectedLocales: selectedLocalesSchema,
+}
+
+export const duplicateDocumentInputSchema = strictObject(duplicateDocumentInputShape)
+
+/** For trusted local callers only. Includes hidden fields. */
+export const duplicateDocumentLocalInputSchema = strictObject({
+  ...duplicateDocumentInputShape,
+  showHiddenFields: showHiddenFieldsSchema,
+})
+
+const findDistinctInputShape = {
+  slug: slugSchema,
+  depth: depthSchema,
+  field: fieldSchema,
+  limit: limitSchema,
+  locale: localeSchema,
+  page: pageSchema,
+  populate: populateSchema,
+  sort: sortSchema,
+  trash: trashSchema,
+  where: whereSchema,
+}
+
+export const findDistinctInputSchema = strictObject(findDistinctInputShape)
+
+/** For trusted local callers only. Includes hidden fields. */
+export const findDistinctLocalInputSchema = strictObject({
+  ...findDistinctInputShape,
+  showHiddenFields: showHiddenFieldsSchema,
+})
+
+const findDocumentsInputShape = {
+  id: z.optional(idSchema),
+  slug: slugSchema,
+  depth: depthSchema,
+  draft: draftSchema,
+  fallbackLocale: fallbackLocaleSchema,
+  joins: joinsSchema,
+  limit: defaultLimitSchema,
+  locale: localeSchema,
+  page: defaultPageSchema,
+  pagination: paginationSchema,
+  populate: populateSchema,
+  select: selectSchema,
+  sort: sortSchema,
+  trash: trashSchema,
+  where: whereSchema,
+}
+
+export const findDocumentsInputSchema = strictObject(findDocumentsInputShape)
+
+/** For trusted local callers only. Includes hidden fields. */
+export const findDocumentsLocalInputSchema = strictObject({
+  ...findDocumentsInputShape,
+  showHiddenFields: showHiddenFieldsSchema,
+})
+
+const findVersionByIDInputShape = {
+  id: idSchema,
+  slug: slugSchema,
+  depth: depthSchema,
+  draft: draftSchema,
+  fallbackLocale: fallbackLocaleSchema,
+  locale: localeSchema,
+  populate: populateSchema,
+  select: selectSchema,
+  trash: trashSchema,
+}
+
+export const findVersionByIDInputSchema = strictObject(findVersionByIDInputShape)
+
+/** For trusted local callers only. Includes hidden fields. */
+export const findVersionByIDLocalInputSchema = strictObject({
+  ...findVersionByIDInputShape,
+  showHiddenFields: showHiddenFieldsSchema,
+})
+
+const findVersionsInputShape = {
+  slug: slugSchema,
+  depth: depthSchema,
+  draft: draftSchema,
+  fallbackLocale: fallbackLocaleSchema,
+  limit: defaultLimitSchema,
+  locale: localeSchema,
+  page: defaultPageSchema,
+  pagination: paginationSchema,
+  populate: populateSchema,
+  select: selectSchema,
+  sort: sortSchema,
+  trash: trashSchema,
+  where: whereSchema,
+}
+
+export const findVersionsInputSchema = strictObject(findVersionsInputShape)
+
+/** For trusted local callers only. Includes hidden fields. */
+export const findVersionsLocalInputSchema = strictObject({
+  ...findVersionsInputShape,
+  showHiddenFields: showHiddenFieldsSchema,
+})
+
+export const getCollectionSchemaInputSchema = strictObject({
+  slug: slugSchema,
+})
+
+const restoreVersionInputShape = {
+  id: idSchema,
+  slug: slugSchema,
+  depth: depthSchema,
+  draft: writeDraftSchema,
+  fallbackLocale: fallbackLocaleSchema,
+  locale: localeSchema,
+  populate: populateSchema,
+  select: selectSchema,
+}
+
+export const restoreVersionInputSchema = strictObject(restoreVersionInputShape)
+
+/** For trusted local callers only. Includes hidden fields. */
+export const restoreVersionLocalInputSchema = strictObject({
+  ...restoreVersionInputShape,
+  showHiddenFields: showHiddenFieldsSchema,
+})
+
+const getUpdateDocumentInputShape = <TFile extends z.core.$ZodType>({ file }: { file: TFile }) => ({
+  id: z.optional(idSchema),
+  slug: slugSchema,
+  data: dataSchema,
+  depth: depthSchema,
+  draft: writeDraftSchema,
+  fallbackLocale: fallbackLocaleSchema,
+  file: z.optional(file),
+  limit: limitSchema,
+  locale: localeSchema,
+  overrideLock: overrideLockSchema,
+  populate: populateSchema,
+  publishAllLocales: publishAllLocalesSchema,
+  select: selectSchema,
+  sort: sortSchema,
+  trash: trashSchema,
+  unpublishAllLocales: unpublishAllLocalesSchema,
+  where: whereSchema,
+})
+
+/** Safe for remote interfaces. Excludes trusted Local API options. */
+export const updateDocumentInputSchema = <TFile extends z.core.$ZodType>({
+  file,
+}: {
+  file: TFile
+}) => strictObject(getUpdateDocumentInputShape({ file }), z.superRefine(requireIDOrWhere))
+
+/** For trusted local callers only. Includes file overwrites and hidden fields. */
+export const updateDocumentLocalInputSchema = <TFile extends z.core.$ZodType>({
+  file,
+}: {
+  file: TFile
+}) =>
+  strictObject(
+    {
+      ...getUpdateDocumentInputShape({ file }),
+      overwriteExistingFiles: overwriteExistingFilesSchema,
+      showHiddenFields: showHiddenFieldsSchema,
+    },
+    z.superRefine(requireIDOrWhere),
+  )

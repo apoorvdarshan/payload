@@ -33,15 +33,15 @@ const isSchemaError = (error: unknown, message: string): boolean => {
 }
 
 export const formatCollectionError = ({
+  slug,
   action,
-  collectionSlug,
   error,
   req,
 }: {
   action: 'creating' | 'duplicating' | 'updating'
-  collectionSlug: CollectionSlug
   error: unknown
   req: PayloadRequest
+  slug: CollectionSlug
 }): MCPToolResponse => {
   const errorMessage = error instanceof Error ? error.message : 'Unknown error'
   const errors = getValidationErrors(error) ?? [{ message: errorMessage }]
@@ -51,14 +51,14 @@ export const formatCollectionError = ({
       content: [
         {
           type: 'text',
-          text: `Error ${action} document in collection "${collectionSlug}": ${errorMessage}`,
+          text: `Error ${action} document in collection "${slug}": ${errorMessage}`,
         },
       ],
       isError: true,
     }
   }
 
-  const schema = getCollectionInputSchema({ collectionSlug, req })
+  const schema = getCollectionInputSchema({ collectionSlug: slug, req })
   const schemaText = schema
     ? `\n\nUse this schema for data:\n\`\`\`json\n${JSON.stringify(schema)}\n\`\`\``
     : ''
@@ -67,14 +67,14 @@ export const formatCollectionError = ({
     content: [
       {
         type: 'text',
-        text: `Error ${action} document in collection "${collectionSlug}": ${errorMessage}${schemaText}`,
+        text: `Error ${action} document in collection "${slug}": ${errorMessage}${schemaText}`,
       },
     ],
     isError: true,
     ...(schema
       ? {
           structuredContent: {
-            collectionSlug,
+            slug,
             errors,
             schema,
           },

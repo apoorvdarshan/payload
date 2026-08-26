@@ -1,23 +1,22 @@
+import { getCollectionSchemaInputSchema } from '../../../collections/operations/inputSchemas.js'
 import { createLocalReq } from '../../../utilities/createLocalReq.js'
 import { getCollectionInputSchema } from '../../../utilities/entityInputSchema/getEntityInputSchema.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
-import { strictObject } from '../../zod.js'
-import { collectionSlugSchema } from '../data/input.js'
 import { printJSON } from '../data/utilities.js'
 
 export const createGetCollectionSchemaCommand = defineCLICommand({
   description: 'Print the writable JSON schema for a local collection.',
   handler: async ({ args, getPayload, isJSON }) => {
     const payload = await getPayload()
-    const collectionSlug = args.slug
+    const slug = args.slug
     const req = await createLocalReq({}, payload)
-    const schema = getCollectionInputSchema({ collectionSlug, req })
+    const schema = getCollectionInputSchema({ collectionSlug: slug, req })
 
     if (!schema) {
-      throw new Error(`Collection "${collectionSlug}" not found.`)
+      throw new Error(`Collection "${slug}" not found.`)
     }
 
-    const uploadConfig = payload.collections[collectionSlug]?.config.upload
+    const uploadConfig = payload.collections[slug]?.config.upload
     const maxFileSize = payload.config.upload.limits?.fileSize
     const upload = uploadConfig
       ? {
@@ -30,7 +29,7 @@ export const createGetCollectionSchemaCommand = defineCLICommand({
         }
       : { enabled: false }
 
-    const result = { collectionSlug, schema, upload }
+    const result = { slug, schema, upload }
 
     if (!isJSON) {
       printJSON(result)
@@ -39,7 +38,5 @@ export const createGetCollectionSchemaCommand = defineCLICommand({
     return { result }
   },
   helpGroup: 'Data commands',
-  input: strictObject({
-    slug: collectionSlugSchema,
-  }),
+  input: getCollectionSchemaInputSchema,
 })

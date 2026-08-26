@@ -1,26 +1,8 @@
-import * as z from 'zod/mini'
-
 import type { PopulateType, SelectType } from '../../../index.js'
 
+import { duplicateDocumentLocalInputSchema } from '../../../collections/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
-import { strictObject } from '../../zod.js'
-import {
-  collectionSlugSchema,
-  dataSchema,
-  depthSchema,
-  fallbackLocaleSchema,
-  idSchema,
-  localeSchema,
-  parseFallbackLocale,
-  parseID,
-  parseJSON,
-  parseSelectedLocales,
-  populateSchema,
-  selectedLocalesSchema,
-  selectSchema,
-  showHiddenFieldsSchema,
-  writeDraftSchema,
-} from '../data/input.js'
+import { parseFallbackLocale, parseID, parseJSON, parseSelectedLocales } from '../data/input.js'
 import { prepareCollectionData, printJSON } from '../data/utilities.js'
 
 export const createDuplicateDocumentCommand = defineCLICommand({
@@ -58,17 +40,5 @@ export const createDuplicateDocumentCommand = defineCLICommand({
     return { result }
   },
   helpGroup: 'Data commands',
-  input: strictObject({
-    id: idSchema,
-    slug: collectionSlugSchema,
-    data: z.optional(dataSchema),
-    depth: depthSchema,
-    draft: writeDraftSchema,
-    fallbackLocale: fallbackLocaleSchema,
-    locale: localeSchema,
-    populate: populateSchema,
-    select: selectSchema,
-    selectedLocales: selectedLocalesSchema,
-    showHiddenFields: showHiddenFieldsSchema,
-  }),
+  input: duplicateDocumentLocalInputSchema,
 })

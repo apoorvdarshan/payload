@@ -10,7 +10,7 @@ import { sanitizeConfig } from '../config/sanitize.js'
 import { defineCLICommand } from './defineCLICommand.js'
 import { createCLI } from './index.js'
 import { CLICommandError, getCLIErrorOutput } from './runtime/output.js'
-import { strictObject } from './zod.js'
+import { strictObject } from '../utilities/zod.js'
 
 const cliDirectory = path.dirname(fileURLToPath(import.meta.url))
 

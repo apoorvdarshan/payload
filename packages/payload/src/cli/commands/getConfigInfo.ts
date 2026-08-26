@@ -1,5 +1,5 @@
+import { getConfigInfoInputSchema } from '../../utilities/sharedInputSchemas.js'
 import { defineCLICommand } from '../defineCLICommand.js'
-import { strictObject } from '../zod.js'
 import { printJSON } from './data/utilities.js'
 
 export const createGetConfigInfoCommand = defineCLICommand({
@@ -19,5 +19,5 @@ export const createGetConfigInfoCommand = defineCLICommand({
     return { result }
   },
   helpGroup: 'Data commands',
-  input: strictObject({}),
+  input: getConfigInfoInputSchema,
 })

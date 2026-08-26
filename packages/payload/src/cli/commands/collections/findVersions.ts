@@ -1,26 +1,6 @@
-import type { Where } from '../../../index.js'
-
+import { findVersionsLocalInputSchema } from '../../../collections/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
-import { strictObject } from '../../zod.js'
-import {
-  collectionSlugSchema,
-  defaultLimitSchema,
-  defaultPageSchema,
-  depthSchema,
-  draftSchema,
-  fallbackLocaleSchema,
-  localeSchema,
-  paginationSchema,
-  parseFallbackLocale,
-  parseJSON,
-  parseSort,
-  populateSchema,
-  selectSchema,
-  showHiddenFieldsSchema,
-  sortSchema,
-  trashSchema,
-  whereSchema,
-} from '../data/input.js'
+import { parseFallbackLocale, parseJSON, parseSort } from '../data/input.js'
 import { getReadOptions, printJSON } from '../data/utilities.js'
 
 export const createFindVersionsCommand = defineCLICommand({
@@ -43,7 +23,7 @@ export const createFindVersionsCommand = defineCLICommand({
       pagination: args.pagination,
       sort: args.sort,
       trash: args.trash,
-      where: args.where as undefined | Where,
+      where: args.where,
     })
 
     if (!isJSON) {
@@ -53,20 +33,5 @@ export const createFindVersionsCommand = defineCLICommand({
     return { result }
   },
   helpGroup: 'Data commands',
-  input: strictObject({
-    slug: collectionSlugSchema,
-    depth: depthSchema,
-    draft: draftSchema,
-    fallbackLocale: fallbackLocaleSchema,
-    limit: defaultLimitSchema,
-    locale: localeSchema,
-    page: defaultPageSchema,
-    pagination: paginationSchema,
-    populate: populateSchema,
-    select: selectSchema,
-    showHiddenFields: showHiddenFieldsSchema,
-    sort: sortSchema,
-    trash: trashSchema,
-    where: whereSchema,
-  }),
+  input: findVersionsLocalInputSchema,
 })

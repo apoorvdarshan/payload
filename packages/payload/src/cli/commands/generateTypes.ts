@@ -9,8 +9,8 @@ import type { SanitizedConfig } from '../../config/types.js'
 import { addSelectGenericsToGeneratedTypes } from '../../utilities/addSelectGenericsToGeneretedTypes.js'
 import { configToJSONSchema } from '../../utilities/configToJSONSchema.js'
 import { getLogger } from '../../utilities/logger.js'
+import { strictObject } from '../../utilities/zod.js'
 import { defineCLICommand } from '../defineCLICommand.js'
-import { strictObject } from '../zod.js'
 
 export type GenerateTypesResult = {
   outputFile: string

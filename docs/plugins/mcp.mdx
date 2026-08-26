@@ -444,7 +444,7 @@ mcpPlugin({
 
 ### Collection-scoped tools
 
-A collection tool's wire name is exactly its key. Payload adds a `collectionSlug` string to the MCP input schema automatically; the handler receives the resolved `collectionSlug`. The field is intentionally not enum-restricted so newly-added collections can be used after HMR even if the MCP client cached the previous tool schema. Built-in collection tools still validate the requested slug against Payload access control on the server.
+A collection tool's wire name is exactly its key. Payload adds a `slug` string to the MCP input schema automatically; the handler receives the resolved `slug`. The field is intentionally not enum-restricted so newly-added collections can be used after HMR even if the MCP client cached the previous tool schema. Built-in collection tools still validate the requested slug against Payload access control on the server.
 
 ```ts
 import { defineCollectionTool, mcpPlugin } from '@payloadcms/plugin-mcp'
@@ -459,10 +459,10 @@ mcpPlugin({
           input: z.object({
             id: z.string(),
           }),
-        }).handler(async ({ collectionSlug, input, authorizedMCP, req }) => {
+        }).handler(async ({ slug, input, authorizedMCP, req }) => {
           const result = await req.payload.update({
             id: input.id,
-            collection: collectionSlug,
+            collection: slug,
             data: { _status: 'published' },
             overrideAccess: authorizedMCP.overrideAccess,
             req,
@@ -484,7 +484,7 @@ mcpPlugin({
 
 ### Global-scoped tools
 
-`defineGlobalTool` mirrors `defineCollectionTool`. Payload adds a `globalSlug` string to the MCP input schema automatically; the handler receives the resolved `globalSlug`. The field is intentionally not enum-restricted so newly-added globals can be used after HMR even if the MCP client cached the previous tool schema. Built-in global tools still validate the requested slug against Payload access control on the server.
+`defineGlobalTool` mirrors `defineCollectionTool`. Payload adds a `slug` string to the MCP input schema automatically; the handler receives the resolved `slug`. The field is intentionally not enum-restricted so newly-added globals can be used after HMR even if the MCP client cached the previous tool schema. Built-in global tools still validate the requested slug against Payload access control on the server.
 
 ```ts
 import { defineGlobalTool, mcpPlugin } from '@payloadcms/plugin-mcp'
@@ -499,9 +499,9 @@ mcpPlugin({
           input: z.object({
             enabled: z.boolean(),
           }),
-        }).handler(async ({ globalSlug, input, authorizedMCP, req }) => {
+        }).handler(async ({ slug, input, authorizedMCP, req }) => {
           const result = await req.payload.updateGlobal({
-            slug: globalSlug,
+            slug,
             data: { maintenanceMode: input.enabled },
             overrideAccess: authorizedMCP.overrideAccess,
             req,
@@ -675,7 +675,7 @@ curl -i 'http://localhost:3000/api/mcp' \
     "params": {
       "name": "findDocuments",
       "arguments": {
-        "collectionSlug": "posts",
+        "slug": "posts",
         "select": {
           "title": true,
           "slug": true
@@ -810,7 +810,7 @@ curl -i 'http://localhost:3000/api/mcp' \
     "params": {
       "name": "findDocuments",
       "arguments": {
-        "collectionSlug": "posts",
+        "slug": "posts",
         "locale": "es",
         "fallbackLocale": "en"
       }
@@ -828,7 +828,7 @@ There are several levers for reducing the number of tokens consumed per MCP requ
 
 ### Write strong descriptions
 
-The description you provide for a collection or global helps the model choose the right `collectionSlug` / `globalSlug` after inspecting the available schemas. A vague description leads to missed or incorrect tool calls; a precise description gets the right document target on the first try.
+The description you provide for a collection or global helps the model choose the right `slug` after inspecting the available schemas. A vague description leads to missed or incorrect tool calls; a precise description gets the right document target on the first try.
 
 ```ts
 // Weak - the model has no idea what kind of posts these are

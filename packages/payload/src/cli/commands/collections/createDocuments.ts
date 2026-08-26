@@ -1,26 +1,10 @@
 import path from 'node:path'
-import * as z from 'zod/mini'
 
 import type { PopulateType, SelectType } from '../../../index.js'
 
+import { createDocumentsLocalInputSchema } from '../../../collections/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
-import { strictObject } from '../../zod.js'
-import {
-  collectionSlugSchema,
-  dataSchema,
-  depthSchema,
-  fallbackLocaleSchema,
-  localeSchema,
-  overwriteExistingFilesSchema,
-  parseDocuments,
-  parseFallbackLocale,
-  parseJSON,
-  populateSchema,
-  publishAllLocalesSchema,
-  selectSchema,
-  showHiddenFieldsSchema,
-  writeDraftSchema,
-} from '../data/input.js'
+import { localFileSchema, parseDocuments, parseFallbackLocale, parseJSON } from '../data/input.js'
 import { prepareCollectionData, printJSON } from '../data/utilities.js'
 
 export const createCreateDocumentsCommand = defineCLICommand({
@@ -76,24 +60,5 @@ export const createCreateDocumentsCommand = defineCLICommand({
     }
   },
   helpGroup: 'Data commands',
-  input: strictObject({
-    slug: collectionSlugSchema,
-    depth: depthSchema,
-    documents: z
-      .array(
-        z.object({
-          data: dataSchema,
-          file: z.optional(z.string()),
-        }),
-      )
-      .check(z.minLength(1), z.describe('Documents to create.')),
-    draft: writeDraftSchema,
-    fallbackLocale: fallbackLocaleSchema,
-    locale: localeSchema,
-    overwriteExistingFiles: overwriteExistingFilesSchema,
-    populate: populateSchema,
-    publishAllLocales: publishAllLocalesSchema,
-    select: selectSchema,
-    showHiddenFields: showHiddenFieldsSchema,
-  }),
+  input: createDocumentsLocalInputSchema({ file: localFileSchema }),
 })

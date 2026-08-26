@@ -91,7 +91,7 @@ describe('Payload data CLI', () => {
               getCollectionSchema: createGetCollectionSchemaCommand,
             },
           },
-        }) as SanitizedConfig,
+        }) as unknown as SanitizedConfig,
       getPayload: vi.fn(),
       isScheduled: false,
       markScheduled: () => undefined,
@@ -102,6 +102,11 @@ describe('Payload data CLI', () => {
       'createDocuments',
       'getCollectionSchema',
     ])
+    expect(createCreateDocumentsCommand.schema.properties.overwriteExistingFiles).toBeDefined()
+    expect(createCreateDocumentsCommand.schema.properties.showHiddenFields).toBeDefined()
+    expect(createFindDocumentsCommand.schema.properties.showHiddenFields).toBeDefined()
+    expect(createUpdateDocumentCommand.schema.properties.overwriteExistingFiles).toBeDefined()
+    expect(createUpdateDocumentCommand.schema.properties.showHiddenFields).toBeDefined()
   })
 
   it('should always bypass access control', async () => {

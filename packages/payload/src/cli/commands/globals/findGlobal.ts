@@ -1,16 +1,6 @@
+import { findGlobalLocalInputSchema } from '../../../globals/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
-import { strictObject } from '../../zod.js'
-import {
-  depthSchema,
-  fallbackLocaleSchema,
-  globalSlugSchema,
-  localeSchema,
-  parseFallbackLocale,
-  parseJSON,
-  populateSchema,
-  selectSchema,
-  showHiddenFieldsSchema,
-} from '../data/input.js'
+import { parseFallbackLocale, parseJSON } from '../data/input.js'
 import { getReadOptions, printJSON } from '../data/utilities.js'
 
 export const createFindGlobalCommand = defineCLICommand({
@@ -34,13 +24,5 @@ export const createFindGlobalCommand = defineCLICommand({
     return { result }
   },
   helpGroup: 'Data commands',
-  input: strictObject({
-    slug: globalSlugSchema,
-    depth: depthSchema,
-    fallbackLocale: fallbackLocaleSchema,
-    locale: localeSchema,
-    populate: populateSchema,
-    select: selectSchema,
-    showHiddenFields: showHiddenFieldsSchema,
-  }),
+  input: findGlobalLocalInputSchema,
 })

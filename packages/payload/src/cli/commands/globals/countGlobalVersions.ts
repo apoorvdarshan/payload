@@ -1,8 +1,6 @@
-import type { Where } from '../../../index.js'
-
+import { countGlobalVersionsInputSchema } from '../../../globals/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
-import { strictObject } from '../../zod.js'
-import { globalSlugSchema, localeSchema, parseJSON, whereSchema } from '../data/input.js'
+import { parseJSON } from '../data/input.js'
 import { printJSON } from '../data/utilities.js'
 
 export const createCountGlobalVersionsCommand = defineCLICommand({
@@ -16,7 +14,7 @@ export const createCountGlobalVersionsCommand = defineCLICommand({
       global: args.slug,
       locale: args.locale,
       overrideAccess: true,
-      where: args.where as undefined | Where,
+      where: args.where,
     })
 
     if (!isJSON) {
@@ -26,9 +24,5 @@ export const createCountGlobalVersionsCommand = defineCLICommand({
     return { result }
   },
   helpGroup: 'Data commands',
-  input: strictObject({
-    slug: globalSlugSchema,
-    locale: localeSchema,
-    where: whereSchema,
-  }),
+  input: countGlobalVersionsInputSchema,
 })

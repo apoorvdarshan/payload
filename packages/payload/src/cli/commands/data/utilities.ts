@@ -1,6 +1,4 @@
 /* eslint-disable no-console */
-import type * as z from 'zod/mini'
-
 import type {
   CollectionSlug,
   GlobalSlug,
@@ -15,19 +13,6 @@ import {
   stripVirtualFields,
 } from '../../../utilities/getVirtualFieldNames.js'
 import { transformPointDataToPayload } from '../../../utilities/transformPointDataToPayload.js'
-
-export const requireIDOrWhere = (
-  options: { id?: number | string; where?: unknown },
-  context: z.core.$RefinementCtx,
-): void => {
-  if (options.id === undefined && !options.where) {
-    context.addIssue({
-      code: 'custom',
-      message: 'Either id or where must be provided.',
-      path: ['id'],
-    })
-  }
-}
 
 export const getReadOptions = (options: {
   depth: number

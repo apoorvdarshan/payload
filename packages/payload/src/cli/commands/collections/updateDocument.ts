@@ -1,61 +1,17 @@
 import path from 'node:path'
-import * as z from 'zod/mini'
 
-import type { Payload, PopulateType, SelectType, Where } from '../../../index.js'
+import type { Payload, PopulateType, SelectType } from '../../../index.js'
 
+import { updateDocumentLocalInputSchema } from '../../../collections/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
-import { strictObject } from '../../zod.js'
 import {
-  collectionSlugSchema,
-  dataSchema,
-  depthSchema,
-  fallbackLocaleSchema,
-  fileSchema,
-  idSchema,
-  limitSchema,
-  localeSchema,
-  overrideLockSchema,
-  overwriteExistingFilesSchema,
+  localFileSchema,
   parseFallbackLocale,
   parseID,
   parseJSON,
   parseSort,
-  populateSchema,
-  publishAllLocalesSchema,
-  selectSchema,
-  showHiddenFieldsSchema,
-  sortSchema,
-  trashSchema,
-  unpublishAllLocalesSchema,
-  whereSchema,
-  writeDraftSchema,
 } from '../data/input.js'
-import { prepareCollectionData, printJSON, requireIDOrWhere } from '../data/utilities.js'
-
-const input = strictObject(
-  {
-    id: z.optional(idSchema),
-    slug: collectionSlugSchema,
-    data: dataSchema,
-    depth: depthSchema,
-    draft: writeDraftSchema,
-    fallbackLocale: fallbackLocaleSchema,
-    file: fileSchema,
-    limit: limitSchema,
-    locale: localeSchema,
-    overrideLock: overrideLockSchema,
-    overwriteExistingFiles: overwriteExistingFilesSchema,
-    populate: populateSchema,
-    publishAllLocales: publishAllLocalesSchema,
-    select: selectSchema,
-    showHiddenFields: showHiddenFieldsSchema,
-    sort: sortSchema,
-    trash: trashSchema,
-    unpublishAllLocales: unpublishAllLocalesSchema,
-    where: whereSchema,
-  },
-  z.superRefine(requireIDOrWhere),
-)
+import { prepareCollectionData, printJSON } from '../data/utilities.js'
 
 export const createUpdateDocumentCommand = defineCLICommand({
   cli: {
@@ -91,7 +47,7 @@ export const createUpdateDocumentCommand = defineCLICommand({
       sort: args.sort,
       trash: args.trash,
       unpublishAllLocales: args.unpublishAllLocales,
-      where: args.where as undefined | Where,
+      where: args.where,
     } as Parameters<Payload['update']>[0])
 
     if (!isJSON) {
@@ -101,5 +57,5 @@ export const createUpdateDocumentCommand = defineCLICommand({
     return { result }
   },
   helpGroup: 'Data commands',
-  input,
+  input: updateDocumentLocalInputSchema({ file: localFileSchema }),
 })

@@ -136,7 +136,8 @@ Use `defineCLICommand` to add your own command. Built-in and custom commands use
 The following example adds a `seed` command. Its code lives in `seed.ts` next to `payload.config.ts`:
 
 ```ts
-import { defineCLICommand, strictObject, z } from 'payload/cli'
+import { strictObject, z } from 'payload'
+import { defineCLICommand } from 'payload/cli'
 
 export const seedCommand = defineCLICommand({
   description: 'Seed the database.',
@@ -166,7 +167,7 @@ export const seedCommand = defineCLICommand({
 
 The `input` schema defines the values the command accepts. Payload uses it to type `args`, validate input, and generate help.
 
-The `z` export from `payload/cli` is Zod Mini. Payload already uses Zod Mini for its built-in commands, so this export adds no extra schema code to the CLI bundle. Use the exported `strictObject` helper for the root input schema so Payload can also generate JSON help.
+The `z` export from `payload` is Zod Mini. Payload already uses Zod Mini, so this export adds no extra schema code to the bundle. Use `strictObject` for the root input schema so Payload can also generate JSON help.
 
 Payload does not export regular Zod because its larger API would increase the bundle size. If you prefer regular Zod's chaining API, add `zod` to your own project and import it directly:
 
@@ -217,7 +218,8 @@ You can also pass a command directly. This example defines a small command insid
 
 ```ts
 import { buildConfig } from 'payload'
-import { defineCLICommand, strictObject } from 'payload/cli'
+import { strictObject } from 'payload'
+import { defineCLICommand } from 'payload/cli'
 
 export default buildConfig({
   cli: {

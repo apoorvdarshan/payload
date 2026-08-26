@@ -22,19 +22,20 @@ type EntityValidator = {
 const validatorCache = new WeakMap<SanitizedConfig, Map<string, EntityValidator>>()
 
 export const validateCollectionData = ({
-  collectionSlug,
+  slug,
   data,
   partial,
   req,
 }: {
-  collectionSlug: CollectionSlug
   data: Record<string, unknown>
   partial?: boolean
   req: PayloadRequest
+  slug: CollectionSlug
 }): MCPToolResponse | null =>
   validateData({
-    slug: collectionSlug,
-    buildSchema: () => getCollectionInputSchema({ collectionSlug, req }) as JsonSchemaType | null,
+    slug,
+    buildSchema: () =>
+      getCollectionInputSchema({ collectionSlug: slug, req }) as JsonSchemaType | null,
     data,
     entity: 'collection',
     partial,
@@ -42,17 +43,17 @@ export const validateCollectionData = ({
   })
 
 export const validateGlobalData = ({
+  slug,
   data,
-  globalSlug,
   req,
 }: {
   data: Record<string, unknown>
-  globalSlug: GlobalSlug
   req: PayloadRequest
+  slug: GlobalSlug
 }): MCPToolResponse | null =>
   validateData({
-    slug: globalSlug,
-    buildSchema: () => getGlobalInputSchema({ globalSlug, req }) as JsonSchemaType | null,
+    slug,
+    buildSchema: () => getGlobalInputSchema({ globalSlug: slug, req }) as JsonSchemaType | null,
     data,
     entity: 'global',
     partial: true,

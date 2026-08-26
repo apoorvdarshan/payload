@@ -113,9 +113,10 @@ const addCommandInput = ({
 
       const optionOverride = typeof override === 'object' ? override : undefined
       const flags = optionOverride?.flags ?? getInferredOptionFlags({ field, property })
-      const option = new Option(
+      const option = new CLIInputOption(
         flags,
         typeof property.description === 'string' ? property.description : '',
+        field,
       )
       const parser = optionOverride?.parse ?? getInferredParser({ property })
 
@@ -148,6 +149,21 @@ const addCommandInput = ({
       'Pass the complete command input as JSON, from a file, or from stdin.',
     ),
   )
+}
+
+/** Keeps a custom flag such as `--file` mapped to its schema field, such as `filePath`. */
+class CLIInputOption extends Option {
+  constructor(
+    flags: string,
+    description: string,
+    private readonly inputField: string,
+  ) {
+    super(flags, description)
+  }
+
+  override attributeName(): string {
+    return this.inputField
+  }
 }
 
 /**
