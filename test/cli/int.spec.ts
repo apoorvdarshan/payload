@@ -249,12 +249,16 @@ test.describe('CLI', () => {
     'countDocuments --slug pages',
     testCLICommand(async (command, { cli }) => {
       const output = await cli(command)
-      const response = JSON.parse(output.stdout) as CLIOutput<{ totalDocs: number }> | {
-        totalDocs: number
-      }
-      const result = 'result' in response ? response.result : response
 
-      expect(result).toEqual({ totalDocs: 1 })
+      if (command.includes('--json')) {
+        expect(JSON.parse(output.stdout)).toMatchObject({
+          command: 'countDocuments',
+          result: { totalDocs: 1 },
+          success: true,
+        })
+      } else {
+        expect(output.stdout).toContain('"totalDocs": 1')
+      }
     }),
   )
 
@@ -262,12 +266,16 @@ test.describe('CLI', () => {
     'countDocuments --slug pages --override-access false',
     testCLICommand(async (command, { cli }) => {
       const output = await cli(command)
-      const response = JSON.parse(output.stdout) as CLIOutput<{ totalDocs: number }> | {
-        totalDocs: number
-      }
-      const result = 'result' in response ? response.result : response
 
-      expect(result).toEqual({ totalDocs: 0 })
+      if (command.includes('--json')) {
+        expect(JSON.parse(output.stdout)).toMatchObject({
+          command: 'countDocuments',
+          result: { totalDocs: 0 },
+          success: true,
+        })
+      } else {
+        expect(output.stdout).toContain('"totalDocs": 0')
+      }
     }),
   )
 
