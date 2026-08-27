@@ -1,14 +1,15 @@
 import type { Payload } from '../../../index.js'
 
-import { deleteDocumentsInputSchema } from '../../../collections/operations/inputSchemas.js'
+import { deleteDocumentsLocalInputSchema } from '../../../collections/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
-import { parseFallbackLocale, parseID, parseJSON } from '../data/input.js'
+import { parseBoolean, parseFallbackLocale, parseID, parseJSON } from '../data/input.js'
 import { printJSON } from '../data/utilities.js'
 
 export const createDeleteDocumentsCommand = defineCLICommand({
   cli: {
     id: { flags: '--id <id>', parse: parseID },
     fallbackLocale: { flags: '--fallback-locale <locale|false>', parse: parseFallbackLocale },
+    overrideAccess: { flags: '--override-access <true|false>', parse: parseBoolean },
     where: { flags: '--where <json|@file>', parse: parseJSON },
   },
   description: 'Delete documents from a local collection by ID or where query.',
@@ -20,7 +21,7 @@ export const createDeleteDocumentsCommand = defineCLICommand({
       depth: args.depth,
       fallbackLocale: args.fallbackLocale,
       locale: args.locale,
-      overrideAccess: true,
+      overrideAccess: args.overrideAccess,
       where: args.where,
     } as Parameters<Payload['delete']>[0])
 
@@ -31,5 +32,5 @@ export const createDeleteDocumentsCommand = defineCLICommand({
     return { result }
   },
   helpGroup: 'Data commands',
-  input: deleteDocumentsInputSchema,
+  input: deleteDocumentsLocalInputSchema,
 })

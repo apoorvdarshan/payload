@@ -1,10 +1,11 @@
-import { countDocumentsInputSchema } from '../../../collections/operations/inputSchemas.js'
+import { countDocumentsLocalInputSchema } from '../../../collections/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
-import { parseJSON } from '../data/input.js'
+import { parseBoolean, parseJSON } from '../data/input.js'
 import { printJSON } from '../data/utilities.js'
 
 export const createCountDocumentsCommand = defineCLICommand({
   cli: {
+    overrideAccess: { flags: '--override-access <true|false>', parse: parseBoolean },
     where: { flags: '--where <json|@file>', parse: parseJSON },
   },
   description: 'Count documents in a local collection.',
@@ -13,7 +14,7 @@ export const createCountDocumentsCommand = defineCLICommand({
     const result = await payload.count({
       collection: args.slug,
       locale: args.locale,
-      overrideAccess: true,
+      overrideAccess: args.overrideAccess,
       trash: args.trash,
       where: args.where,
     })
@@ -25,5 +26,5 @@ export const createCountDocumentsCommand = defineCLICommand({
     return { result }
   },
   helpGroup: 'Data commands',
-  input: countDocumentsInputSchema,
+  input: countDocumentsLocalInputSchema,
 })

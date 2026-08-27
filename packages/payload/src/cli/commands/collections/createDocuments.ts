@@ -4,13 +4,20 @@ import type { PopulateType, SelectType } from '../../../index.js'
 
 import { createDocumentsLocalInputSchema } from '../../../collections/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
-import { localFileSchema, parseDocuments, parseFallbackLocale, parseJSON } from '../data/input.js'
+import {
+  localFileSchema,
+  parseBoolean,
+  parseDocuments,
+  parseFallbackLocale,
+  parseJSON,
+} from '../data/input.js'
 import { prepareCollectionData, printJSON } from '../data/utilities.js'
 
 export const createCreateDocumentsCommand = defineCLICommand({
   cli: {
     documents: { flags: '--documents <json|@file>', parse: parseDocuments },
     fallbackLocale: { flags: '--fallback-locale <locale|false>', parse: parseFallbackLocale },
+    overrideAccess: { flags: '--override-access <true|false>', parse: parseBoolean },
     populate: { flags: '--populate <json|@file>', parse: parseJSON },
     select: { flags: '--select <json|@file>', parse: parseJSON },
   },
@@ -31,7 +38,7 @@ export const createCreateDocumentsCommand = defineCLICommand({
           fallbackLocale: args.fallbackLocale,
           filePath: file ? path.resolve(process.cwd(), file) : undefined,
           locale: args.locale,
-          overrideAccess: true,
+          overrideAccess: args.overrideAccess,
           overwriteExistingFiles: args.overwriteExistingFiles,
           populate: args.populate as PopulateType | undefined,
           publishAllLocales: args.publishAllLocales,

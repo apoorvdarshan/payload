@@ -109,7 +109,7 @@ describe('Payload data CLI', () => {
     expect(createUpdateDocumentCommand.schema.properties.showHiddenFields).toBeDefined()
   })
 
-  it('should always bypass access control', async () => {
+  it('should bypass access control by default', async () => {
     const count = vi.fn().mockResolvedValue({ totalDocs: 2 })
     const log = vi.spyOn(console, 'log').mockImplementation(() => undefined)
     const payload = makePayload({ count })

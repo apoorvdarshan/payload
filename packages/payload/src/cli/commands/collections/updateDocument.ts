@@ -6,6 +6,7 @@ import { updateDocumentLocalInputSchema } from '../../../collections/operations/
 import { defineCLICommand } from '../../defineCLICommand.js'
 import {
   localFileSchema,
+  parseBoolean,
   parseFallbackLocale,
   parseID,
   parseJSON,
@@ -18,6 +19,7 @@ export const createUpdateDocumentCommand = defineCLICommand({
     id: { flags: '--id <id>', parse: parseID },
     data: { flags: '--data <json|@file>', parse: parseJSON },
     fallbackLocale: { flags: '--fallback-locale <locale|false>', parse: parseFallbackLocale },
+    overrideAccess: { flags: '--override-access <true|false>', parse: parseBoolean },
     populate: { flags: '--populate <json|@file>', parse: parseJSON },
     select: { flags: '--select <json|@file>', parse: parseJSON },
     sort: { flags: '--sort <field>', parse: parseSort },
@@ -37,7 +39,7 @@ export const createUpdateDocumentCommand = defineCLICommand({
       filePath: args.file ? path.resolve(process.cwd(), args.file) : undefined,
       limit: args.limit,
       locale: args.locale,
-      overrideAccess: true,
+      overrideAccess: args.overrideAccess,
       overrideLock: args.overrideLock,
       overwriteExistingFiles: args.overwriteExistingFiles,
       populate: args.populate as PopulateType | undefined,

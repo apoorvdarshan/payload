@@ -1515,10 +1515,13 @@ export { findVersionByIDOperation } from './collections/operations/findVersionBy
 export { findVersionsOperation } from './collections/operations/findVersions.js'
 export {
   countDocumentsInputSchema,
+  countDocumentsLocalInputSchema,
   countVersionsInputSchema,
+  countVersionsLocalInputSchema,
   createDocumentsInputSchema,
   createDocumentsLocalInputSchema,
   deleteDocumentsInputSchema,
+  deleteDocumentsLocalInputSchema,
   duplicateDocumentInputSchema,
   duplicateDocumentLocalInputSchema,
   findDistinctInputSchema,
@@ -1898,6 +1901,7 @@ export { findVersionByIDOperation as findVersionByIDOperationGlobal } from './gl
 export { findVersionsOperation as findVersionsOperationGlobal } from './globals/operations/findVersions.js'
 export {
   countGlobalVersionsInputSchema,
+  countGlobalVersionsLocalInputSchema,
   findGlobalInputSchema,
   findGlobalLocalInputSchema,
   findGlobalVersionByIDInputSchema,
@@ -2014,7 +2018,6 @@ export {
 export { createArrayFromCommaDelineated } from './utilities/createArrayFromCommaDelineated.js'
 export { createLocalReq } from './utilities/createLocalReq.js'
 export { createPayloadRequest } from './utilities/createPayloadRequest.js'
-export { getConfigInfoInputSchema } from './utilities/sharedInputSchemas.js'
 export {
   deepCopyObject,
   deepCopyObjectComplex,
@@ -2082,11 +2085,12 @@ export type { JoinParams } from './utilities/sanitizeJoinParams.js'
 export { sanitizePopulateParam } from './utilities/sanitizePopulateParam.js'
 export { sanitizeSelectParam } from './utilities/sanitizeSelectParam.js'
 export { sanitizeSortParams } from './utilities/sanitizeSortParams.js'
-export { strictObject } from './utilities/zod.js'
+export { getConfigInfoInputSchema } from './utilities/sharedInputSchemas.js'
 export { stripUnselectedFields } from './utilities/stripUnselectedFields.js'
 export { transformPointDataToPayload } from './utilities/transformPointDataToPayload.js'
 export { traverseFields } from './utilities/traverseFields.js'
 export type { TraverseFieldsCallback } from './utilities/traverseFields.js'
+export { strictObject } from './utilities/zod.js'
 export { buildVersionCollectionFields } from './versions/buildCollectionFields.js'
 export { buildVersionGlobalFields } from './versions/buildGlobalFields.js'
 export { buildVersionCompoundIndexes } from './versions/buildVersionCompoundIndexes.js'

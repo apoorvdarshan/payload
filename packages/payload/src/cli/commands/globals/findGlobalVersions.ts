@@ -1,11 +1,12 @@
 import { findGlobalVersionsLocalInputSchema } from '../../../globals/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
-import { parseFallbackLocale, parseJSON, parseSort } from '../data/input.js'
+import { parseBoolean, parseFallbackLocale, parseJSON, parseSort } from '../data/input.js'
 import { getReadOptions, printJSON } from '../data/utilities.js'
 
 export const createFindGlobalVersionsCommand = defineCLICommand({
   cli: {
     fallbackLocale: { flags: '--fallback-locale <locale|false>', parse: parseFallbackLocale },
+    overrideAccess: { flags: '--override-access <true|false>', parse: parseBoolean },
     populate: { flags: '--populate <json|@file>', parse: parseJSON },
     select: { flags: '--select <json|@file>', parse: parseJSON },
     sort: { flags: '--sort <field>', parse: parseSort },

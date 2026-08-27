@@ -246,6 +246,44 @@ test.describe('CLI', () => {
   })
 
   test(
+    'countDocuments --slug pages',
+    testCLICommand(async (command, { cli }) => {
+      const output = await cli(command)
+      const response = JSON.parse(output.stdout) as CLIOutput<{ totalDocs: number }> | {
+        totalDocs: number
+      }
+      const result = 'result' in response ? response.result : response
+
+      expect(result).toEqual({ totalDocs: 1 })
+    }),
+  )
+
+  test(
+    'countDocuments --slug pages --override-access false',
+    testCLICommand(async (command, { cli }) => {
+      const output = await cli(command)
+      const response = JSON.parse(output.stdout) as CLIOutput<{ totalDocs: number }> | {
+        totalDocs: number
+      }
+      const result = 'result' in response ? response.result : response
+
+      expect(result).toEqual({ totalDocs: 0 })
+    }),
+  )
+
+  test('countDocuments --slug pages --override-access yes', async ({ cli }) => {
+    await expect(cli('countDocuments --slug pages --override-access yes')).rejects.toThrow(
+      'Expected true or false.',
+    )
+  })
+
+  test('countDocuments --help', async ({ cli }) => {
+    const output = await cli('countDocuments --help')
+
+    expect(`${output.stdout}\n${output.stderr}`).toContain('--override-access <true|false>')
+  })
+
+  test(
     'jobs:handle-schedules --all-queues',
     testCLICommand(async (command, { cli, payload }) => {
       const jobsBefore = (await payload.find({

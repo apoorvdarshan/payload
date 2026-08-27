@@ -1,12 +1,13 @@
 import { restoreGlobalVersionLocalInputSchema } from '../../../globals/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
-import { parseFallbackLocale, parseID, parseJSON } from '../data/input.js'
+import { parseBoolean, parseFallbackLocale, parseID, parseJSON } from '../data/input.js'
 import { getReadOptions, printJSON } from '../data/utilities.js'
 
 export const createRestoreGlobalVersionCommand = defineCLICommand({
   cli: {
     id: { flags: '--id <id>', parse: parseID },
     fallbackLocale: { flags: '--fallback-locale <locale|false>', parse: parseFallbackLocale },
+    overrideAccess: { flags: '--override-access <true|false>', parse: parseBoolean },
     populate: { flags: '--populate <json|@file>', parse: parseJSON },
     select: { flags: '--select <json|@file>', parse: parseJSON },
   },

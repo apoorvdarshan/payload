@@ -22,6 +22,9 @@ export default buildConfigWithDefaults({
   collections: [
     {
       slug: 'pages',
+      access: {
+        read: () => ({ title: { equals: 'Readable through access control' } }),
+      },
       fields: [
         {
           name: 'title',

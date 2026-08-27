@@ -18,6 +18,7 @@ export const getReadOptions = (options: {
   depth: number
   fallbackLocale?: false | string
   locale?: string
+  overrideAccess: boolean
   populate?: Record<string, unknown>
   select?: Record<string, unknown>
   showHiddenFields?: boolean
@@ -25,7 +26,7 @@ export const getReadOptions = (options: {
   depth: options.depth,
   fallbackLocale: options.fallbackLocale,
   locale: options.locale,
-  overrideAccess: true as const,
+  overrideAccess: options.overrideAccess,
   populate: options.populate as PopulateType | undefined,
   select: options.select as SelectType | undefined,
   showHiddenFields: options.showHiddenFields,

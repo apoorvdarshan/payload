@@ -18,6 +18,7 @@ import {
   joinsSchema,
   limitSchema,
   localeSchema,
+  overrideAccessSchema,
   overrideLockSchema,
   overwriteExistingFilesSchema,
   pageSchema,
@@ -37,17 +38,33 @@ import {
 } from '../../utilities/sharedInputSchemas.js'
 import { strictObject } from '../../utilities/zod.js'
 
-export const countDocumentsInputSchema = strictObject({
+const countDocumentsInputShape = {
   slug: slugSchema,
   locale: localeSchema,
   trash: trashSchema,
   where: whereSchema,
+}
+
+export const countDocumentsInputSchema = strictObject(countDocumentsInputShape)
+
+/** For trusted local callers only. Includes access bypass. */
+export const countDocumentsLocalInputSchema = strictObject({
+  ...countDocumentsInputShape,
+  overrideAccess: overrideAccessSchema,
 })
 
-export const countVersionsInputSchema = strictObject({
+const countVersionsInputShape = {
   slug: slugSchema,
   locale: localeSchema,
   where: whereSchema,
+}
+
+export const countVersionsInputSchema = strictObject(countVersionsInputShape)
+
+/** For trusted local callers only. Includes access bypass. */
+export const countVersionsLocalInputSchema = strictObject({
+  ...countVersionsInputShape,
+  overrideAccess: overrideAccessSchema,
 })
 
 const getCreateDocumentsInputShape = <TFile extends z.core.$ZodType>({
@@ -80,7 +97,7 @@ export const createDocumentsInputSchema = <TFile extends z.core.$ZodType>({
   file: TFile
 }) => strictObject(getCreateDocumentsInputShape({ file }))
 
-/** For trusted local callers only. Includes file overwrites and hidden fields. */
+/** For trusted local callers only. Includes access bypass, file overwrites, and hidden fields. */
 export const createDocumentsLocalInputSchema = <TFile extends z.core.$ZodType>({
   file,
 }: {
@@ -88,18 +105,30 @@ export const createDocumentsLocalInputSchema = <TFile extends z.core.$ZodType>({
 }) =>
   strictObject({
     ...getCreateDocumentsInputShape({ file }),
+    overrideAccess: overrideAccessSchema,
     overwriteExistingFiles: overwriteExistingFilesSchema,
     showHiddenFields: showHiddenFieldsSchema,
   })
 
+const deleteDocumentsInputShape = {
+  id: z.optional(idSchema),
+  slug: slugSchema,
+  depth: depthSchema,
+  fallbackLocale: fallbackLocaleSchema,
+  locale: localeSchema,
+  where: whereSchema,
+}
+
 export const deleteDocumentsInputSchema = strictObject(
+  deleteDocumentsInputShape,
+  z.superRefine(requireIDOrWhere),
+)
+
+/** For trusted local callers only. Includes access bypass. */
+export const deleteDocumentsLocalInputSchema = strictObject(
   {
-    id: z.optional(idSchema),
-    slug: slugSchema,
-    depth: depthSchema,
-    fallbackLocale: fallbackLocaleSchema,
-    locale: localeSchema,
-    where: whereSchema,
+    ...deleteDocumentsInputShape,
+    overrideAccess: overrideAccessSchema,
   },
   z.superRefine(requireIDOrWhere),
 )
@@ -119,9 +148,10 @@ const duplicateDocumentInputShape = {
 
 export const duplicateDocumentInputSchema = strictObject(duplicateDocumentInputShape)
 
-/** For trusted local callers only. Includes hidden fields. */
+/** For trusted local callers only. Includes access bypass and hidden fields. */
 export const duplicateDocumentLocalInputSchema = strictObject({
   ...duplicateDocumentInputShape,
+  overrideAccess: overrideAccessSchema,
   showHiddenFields: showHiddenFieldsSchema,
 })
 
@@ -140,9 +170,10 @@ const findDistinctInputShape = {
 
 export const findDistinctInputSchema = strictObject(findDistinctInputShape)
 
-/** For trusted local callers only. Includes hidden fields. */
+/** For trusted local callers only. Includes access bypass and hidden fields. */
 export const findDistinctLocalInputSchema = strictObject({
   ...findDistinctInputShape,
+  overrideAccess: overrideAccessSchema,
   showHiddenFields: showHiddenFieldsSchema,
 })
 
@@ -166,9 +197,10 @@ const findDocumentsInputShape = {
 
 export const findDocumentsInputSchema = strictObject(findDocumentsInputShape)
 
-/** For trusted local callers only. Includes hidden fields. */
+/** For trusted local callers only. Includes access bypass and hidden fields. */
 export const findDocumentsLocalInputSchema = strictObject({
   ...findDocumentsInputShape,
+  overrideAccess: overrideAccessSchema,
   showHiddenFields: showHiddenFieldsSchema,
 })
 
@@ -186,9 +218,10 @@ const findVersionByIDInputShape = {
 
 export const findVersionByIDInputSchema = strictObject(findVersionByIDInputShape)
 
-/** For trusted local callers only. Includes hidden fields. */
+/** For trusted local callers only. Includes access bypass and hidden fields. */
 export const findVersionByIDLocalInputSchema = strictObject({
   ...findVersionByIDInputShape,
+  overrideAccess: overrideAccessSchema,
   showHiddenFields: showHiddenFieldsSchema,
 })
 
@@ -210,9 +243,10 @@ const findVersionsInputShape = {
 
 export const findVersionsInputSchema = strictObject(findVersionsInputShape)
 
-/** For trusted local callers only. Includes hidden fields. */
+/** For trusted local callers only. Includes access bypass and hidden fields. */
 export const findVersionsLocalInputSchema = strictObject({
   ...findVersionsInputShape,
+  overrideAccess: overrideAccessSchema,
   showHiddenFields: showHiddenFieldsSchema,
 })
 
@@ -233,9 +267,10 @@ const restoreVersionInputShape = {
 
 export const restoreVersionInputSchema = strictObject(restoreVersionInputShape)
 
-/** For trusted local callers only. Includes hidden fields. */
+/** For trusted local callers only. Includes access bypass and hidden fields. */
 export const restoreVersionLocalInputSchema = strictObject({
   ...restoreVersionInputShape,
+  overrideAccess: overrideAccessSchema,
   showHiddenFields: showHiddenFieldsSchema,
 })
 
@@ -266,7 +301,7 @@ export const updateDocumentInputSchema = <TFile extends z.core.$ZodType>({
   file: TFile
 }) => strictObject(getUpdateDocumentInputShape({ file }), z.superRefine(requireIDOrWhere))
 
-/** For trusted local callers only. Includes file overwrites and hidden fields. */
+/** For trusted local callers only. Includes access bypass, file overwrites, and hidden fields. */
 export const updateDocumentLocalInputSchema = <TFile extends z.core.$ZodType>({
   file,
 }: {
@@ -275,6 +310,7 @@ export const updateDocumentLocalInputSchema = <TFile extends z.core.$ZodType>({
   strictObject(
     {
       ...getUpdateDocumentInputShape({ file }),
+      overrideAccess: overrideAccessSchema,
       overwriteExistingFiles: overwriteExistingFilesSchema,
       showHiddenFields: showHiddenFieldsSchema,
     },

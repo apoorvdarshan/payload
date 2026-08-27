@@ -298,7 +298,7 @@ export default buildConfig({
 
 ## Working with data from the CLI
 
-Payload includes local commands for inspecting the config and working with collections and globals. They use the Local API, load the current Payload config on every invocation, and set `overrideAccess: true`. Run them only from a trusted environment with access to the project.
+Payload includes local commands for inspecting the config and working with collections and globals. They use the Local API, load the current Payload config on every invocation, and bypass access control by default. Run them only from a trusted environment with access to the project.
 
 Start by discovering the available slugs and inspecting the input schema for a collection:
 
@@ -318,6 +318,18 @@ pnpm payload updateDocument \
   --slug posts \
   --id 1 \
   --data '{"title":"Updated title"}'
+```
+
+Pass `--override-access false` to run a data command through Payload's access control. Local CLI commands do not have a logged-in user, so access is checked as an anonymous request:
+
+```sh
+pnpm payload findDocuments --slug posts --override-access false
+```
+
+The same option is named `overrideAccess` in JSON input:
+
+```sh
+pnpm payload findDocuments --input '{"slug":"posts","overrideAccess":false}'
 ```
 
 `createDocuments` accepts one or more `documents`, keeping each document's data and optional upload file together:

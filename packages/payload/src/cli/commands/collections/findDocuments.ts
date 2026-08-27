@@ -2,7 +2,7 @@ import type { JoinQuery } from '../../../index.js'
 
 import { findDocumentsLocalInputSchema } from '../../../collections/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
-import { parseFallbackLocale, parseID, parseJSON, parseSort } from '../data/input.js'
+import { parseBoolean, parseFallbackLocale, parseID, parseJSON, parseSort } from '../data/input.js'
 import { getReadOptions, printJSON } from '../data/utilities.js'
 
 export const createFindDocumentsCommand = defineCLICommand({
@@ -10,6 +10,7 @@ export const createFindDocumentsCommand = defineCLICommand({
     id: { flags: '--id <id>', parse: parseID },
     fallbackLocale: { flags: '--fallback-locale <locale|false>', parse: parseFallbackLocale },
     joins: { flags: '--joins <json|@file>', parse: parseJSON },
+    overrideAccess: { flags: '--override-access <true|false>', parse: parseBoolean },
     populate: { flags: '--populate <json|@file>', parse: parseJSON },
     select: { flags: '--select <json|@file>', parse: parseJSON },
     sort: { flags: '--sort <field>', parse: parseSort },

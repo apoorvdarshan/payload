@@ -2,11 +2,12 @@ import type { PopulateType } from '../../../index.js'
 
 import { findDistinctLocalInputSchema } from '../../../collections/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
-import { parseJSON, parseSort } from '../data/input.js'
+import { parseBoolean, parseJSON, parseSort } from '../data/input.js'
 import { printJSON } from '../data/utilities.js'
 
 export const createFindDistinctCommand = defineCLICommand({
   cli: {
+    overrideAccess: { flags: '--override-access <true|false>', parse: parseBoolean },
     populate: { flags: '--populate <json|@file>', parse: parseJSON },
     sort: { flags: '--sort <field>', parse: parseSort },
     where: { flags: '--where <json|@file>', parse: parseJSON },
@@ -20,7 +21,7 @@ export const createFindDistinctCommand = defineCLICommand({
       field: args.field,
       limit: args.limit,
       locale: args.locale,
-      overrideAccess: true,
+      overrideAccess: args.overrideAccess,
       page: args.page,
       populate: args.populate as PopulateType | undefined,
       showHiddenFields: args.showHiddenFields,

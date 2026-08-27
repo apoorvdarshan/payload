@@ -12,6 +12,7 @@ import {
   fallbackLocaleSchema,
   idSchema,
   localeSchema,
+  overrideAccessSchema,
   overrideLockSchema,
   paginationSchema,
   populateSchema,
@@ -26,10 +27,18 @@ import {
 } from '../../utilities/sharedInputSchemas.js'
 import { strictObject } from '../../utilities/zod.js'
 
-export const countGlobalVersionsInputSchema = strictObject({
+const countGlobalVersionsInputShape = {
   slug: slugSchema,
   locale: localeSchema,
   where: whereSchema,
+}
+
+export const countGlobalVersionsInputSchema = strictObject(countGlobalVersionsInputShape)
+
+/** For trusted local callers only. Includes access bypass. */
+export const countGlobalVersionsLocalInputSchema = strictObject({
+  ...countGlobalVersionsInputShape,
+  overrideAccess: overrideAccessSchema,
 })
 
 const findGlobalInputShape = {
@@ -43,9 +52,10 @@ const findGlobalInputShape = {
 
 export const findGlobalInputSchema = strictObject(findGlobalInputShape)
 
-/** For trusted local callers only. Includes hidden fields. */
+/** For trusted local callers only. Includes access bypass and hidden fields. */
 export const findGlobalLocalInputSchema = strictObject({
   ...findGlobalInputShape,
+  overrideAccess: overrideAccessSchema,
   showHiddenFields: showHiddenFieldsSchema,
 })
 
@@ -61,9 +71,10 @@ const findGlobalVersionByIDInputShape = {
 
 export const findGlobalVersionByIDInputSchema = strictObject(findGlobalVersionByIDInputShape)
 
-/** For trusted local callers only. Includes hidden fields. */
+/** For trusted local callers only. Includes access bypass and hidden fields. */
 export const findGlobalVersionByIDLocalInputSchema = strictObject({
   ...findGlobalVersionByIDInputShape,
+  overrideAccess: overrideAccessSchema,
   showHiddenFields: showHiddenFieldsSchema,
 })
 
@@ -83,9 +94,10 @@ const findGlobalVersionsInputShape = {
 
 export const findGlobalVersionsInputSchema = strictObject(findGlobalVersionsInputShape)
 
-/** For trusted local callers only. Includes hidden fields. */
+/** For trusted local callers only. Includes access bypass and hidden fields. */
 export const findGlobalVersionsLocalInputSchema = strictObject({
   ...findGlobalVersionsInputShape,
+  overrideAccess: overrideAccessSchema,
   showHiddenFields: showHiddenFieldsSchema,
 })
 
@@ -105,9 +117,10 @@ const restoreGlobalVersionInputShape = {
 
 export const restoreGlobalVersionInputSchema = strictObject(restoreGlobalVersionInputShape)
 
-/** For trusted local callers only. Includes hidden fields. */
+/** For trusted local callers only. Includes access bypass and hidden fields. */
 export const restoreGlobalVersionLocalInputSchema = strictObject({
   ...restoreGlobalVersionInputShape,
+  overrideAccess: overrideAccessSchema,
   showHiddenFields: showHiddenFieldsSchema,
 })
 
@@ -127,8 +140,9 @@ const updateGlobalInputShape = {
 
 export const updateGlobalInputSchema = strictObject(updateGlobalInputShape)
 
-/** For trusted local callers only. Includes hidden fields. */
+/** For trusted local callers only. Includes access bypass and hidden fields. */
 export const updateGlobalLocalInputSchema = strictObject({
   ...updateGlobalInputShape,
+  overrideAccess: overrideAccessSchema,
   showHiddenFields: showHiddenFieldsSchema,
 })

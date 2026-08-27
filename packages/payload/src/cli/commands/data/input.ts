@@ -6,6 +6,18 @@ export const localFileSchema = z
   .string()
   .check(z.minLength(1), z.describe('Local upload file path.'))
 
+export const parseBoolean = (value: string): boolean => {
+  if (value === 'true') {
+    return true
+  }
+
+  if (value === 'false') {
+    return false
+  }
+
+  throw new Error('Expected true or false.')
+}
+
 export const parseFallbackLocale = (value: string): false | string =>
   value === 'false' ? false : value
 
