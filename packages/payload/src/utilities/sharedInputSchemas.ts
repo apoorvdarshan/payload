@@ -62,7 +62,9 @@ const selectExcludeInputSchema: z.ZodMiniType<SelectExcludeType> = z.lazy(() =>
   z.record(z.string(), z.union([z.literal(false), selectExcludeInputSchema])),
 )
 
-const selectInputSchema = z.union([selectIncludeInputSchema, selectExcludeInputSchema])
+const selectInputSchema = z
+  .union([selectIncludeInputSchema, selectExcludeInputSchema])
+  .check(z.meta({ type: 'object' }))
 
 export const populateSchema = z
   .optional(z.record(z.string(), selectInputSchema))
