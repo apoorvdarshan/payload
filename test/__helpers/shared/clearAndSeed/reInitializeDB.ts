@@ -6,15 +6,9 @@ export const path = '/re-initialize'
 export const reInitializeDB = async ({
   deleteOnly,
   serverURL,
-  snapshotKey,
-  uploadsDir,
 }: {
   deleteOnly?: boolean
   serverURL: string
-  /** @deprecated Supplied only by configs that have not migrated to the fixture yet. */
-  snapshotKey?: string
-  /** @deprecated Upload directories are inferred by migrated configs. */
-  uploadsDir?: string | string[]
 }) => {
   const maxAttempts = 50
   let attempt = 1
@@ -27,8 +21,6 @@ export const reInitializeDB = async ({
       const queryParams = qs.stringify(
         {
           deleteOnly,
-          snapshotKey,
-          uploadsDir,
         },
         {
           addQueryPrefix: true,
@@ -41,7 +33,7 @@ export const reInitializeDB = async ({
           headers: {
             'Content-Type': 'application/json',
           },
-          method: snapshotKey === undefined && uploadsDir === undefined ? 'post' : 'get',
+          method: 'post',
         },
       )
 

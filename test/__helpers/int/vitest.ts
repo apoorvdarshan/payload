@@ -1,8 +1,7 @@
 import type { Payload, SanitizedConfig } from 'payload'
 
-import path from 'node:path'
 import { getPayload } from 'payload'
-import { expect, test as vitestTest } from 'vitest'
+import { test as vitestTest } from 'vitest'
 
 import type { DatabaseAdapterType } from '../../dbAdapters.js'
 
@@ -10,7 +9,6 @@ import { getCurrentDatabaseAdapter } from '../../dbAdapters.js'
 import { resetAndSeed } from '../shared/clearAndSeed/resetAndSeed.js'
 import { getTestDataConfig } from '../shared/clearAndSeed/testDataConfig.js'
 import { getSDK } from '../shared/getSDK.js'
-import { initPayloadInt } from '../shared/initPayloadInt.js'
 import { mongooseList } from '../shared/isMongoose.js'
 import { NextRESTClient } from '../shared/NextRESTClient.js'
 
@@ -33,7 +31,6 @@ type IntegrationFixtures = {
     payloadInstance: Payload
     testConfig: TestConfig
     testCron: boolean
-    testSuiteConfigured: boolean
   }
   $test: {
     payload: Payload
@@ -45,33 +42,25 @@ type IntegrationFixtures = {
 // Keep all fixtures in one extension so Vitest can trace test calls back to their source lines.
 const testWithFixtures = vitestTest.extend<IntegrationFixtures>({
   config: [
-    async ({ testConfig, testSuiteConfigured }, use) => {
-      if (testSuiteConfigured && testConfig === null) {
+    async ({ testConfig }, use) => {
+      if (testConfig === null) {
         throw new Error(
           'This integration test requires Payload. Pass its config to test.suite({ config: testConfig })(...).',
         )
       }
 
-      const config =
-        testConfig !== null
-          ? await testConfig
-          : (await initPayloadInt(getTestDirectory(), undefined, false)).config
-
-      await use(config)
+      await use(await testConfig)
     },
     { scope: 'file' },
   ],
-  payload: async ({ payloadInstance, testSuiteConfigured }, use) => {
-    if (testSuiteConfigured) {
-      const testDataConfig = getTestDataConfig(payloadInstance.config)
+  payload: async ({ payloadInstance }, use) => {
+    const testDataConfig = getTestDataConfig(payloadInstance.config)
 
-      if (!testDataConfig) {
-        throw new Error('Test suite metadata was not registered by buildConfigWithDefaults.')
-      }
-
-      await resetAndSeed({ payload: payloadInstance, ...testDataConfig })
+    if (!testDataConfig) {
+      throw new Error('Test suite metadata was not registered by buildConfigWithDefaults.')
     }
 
+    await resetAndSeed({ payload: payloadInstance, ...testDataConfig })
     await use(payloadInstance)
   },
   payloadInstance: [
@@ -106,13 +95,6 @@ const testWithFixtures = vitestTest.extend<IntegrationFixtures>({
     },
     { scope: 'file' },
   ],
-  testSuiteConfigured: [
-    // eslint-disable-next-line no-empty-pattern
-    async ({}, use) => {
-      await use(false)
-    },
-    { scope: 'file' },
-  ],
 })
 
 /**
@@ -144,23 +126,12 @@ export const test = Object.assign(testWithFixtures, {
   suite: ({ config, cron = true, db }: TestSuiteOptions) => {
     testWithFixtures.override('testConfig', config ?? null)
     testWithFixtures.override('testCron', cron)
-    testWithFixtures.override('testSuiteConfigured', true)
 
     return testWithFixtures.describe.runIf(matchesDatabase({ db }))
   },
 })
 
 export const it = test
-
-const getTestDirectory = (): string => {
-  const testPath = expect.getState().testPath
-
-  if (!testPath) {
-    throw new Error('Could not determine the integration test file path.')
-  }
-
-  return path.dirname(testPath)
-}
 
 const isMongo = mongooseList.includes(process.env.PAYLOAD_DATABASE!)
 
