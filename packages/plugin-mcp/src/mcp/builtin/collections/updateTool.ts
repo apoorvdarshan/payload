@@ -1,4 +1,4 @@
-import type { Payload, PopulateType, SelectType, Where } from 'payload'
+import type { Where } from 'payload'
 
 import {
   getCollectionInputSchema,
@@ -87,10 +87,10 @@ export const updateDocumentTool = defineCollectionTool({
         locale,
         overrideAccess: authorizedMCP.overrideAccess,
         overrideLock,
-        populate: populate as PopulateType | undefined,
+        populate,
         publishAllLocales,
         req,
-        select: select as SelectType | undefined,
+        select,
         trash,
         unpublishAllLocales,
         ...(file ? { file } : {}),
@@ -117,10 +117,10 @@ export const updateDocumentTool = defineCollectionTool({
       locale,
       overrideAccess: authorizedMCP.overrideAccess,
       overrideLock,
-      populate: populate as PopulateType | undefined,
+      populate,
       publishAllLocales,
       req,
-      select: select as SelectType | undefined,
+      select,
       sort,
       trash,
       unpublishAllLocales,

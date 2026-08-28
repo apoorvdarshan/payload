@@ -1,5 +1,3 @@
-import type { PopulateType, SelectType } from 'payload'
-
 import {
   duplicateDocumentInputSchema,
   getCollectionVirtualFieldNames,
@@ -50,8 +48,8 @@ export const duplicateDocumentTool = defineCollectionTool({
       ...(parsedData ? { data: parsedData } : {}),
       ...(locale ? { locale } : {}),
       ...(fallbackLocale !== undefined ? { fallbackLocale } : {}),
-      ...(populate ? { populate: populate as PopulateType } : {}),
-      ...(select ? { select: select as SelectType } : {}),
+      ...(populate ? { populate } : {}),
+      ...(select ? { select } : {}),
       ...(selectedLocales ? { selectedLocales } : {}),
     })
 

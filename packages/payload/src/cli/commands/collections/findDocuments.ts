@@ -1,5 +1,3 @@
-import type { JoinQuery } from '../../../index.js'
-
 import { findDocumentsLocalInputSchema } from '../../../collections/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
 import { parseBoolean, parseFallbackLocale, parseID, parseJSON, parseSort } from '../data/input.js'
@@ -28,14 +26,14 @@ export const createFindDocumentsCommand = defineCLICommand({
             collection,
             ...commonOptions,
             draft: args.draft,
-            joins: args.joins as false | JoinQuery | undefined,
+            joins: args.joins,
             trash: args.trash,
           })
         : await payload.find({
             collection,
             ...commonOptions,
             draft: args.draft,
-            joins: args.joins as false | JoinQuery | undefined,
+            joins: args.joins,
             limit: args.limit,
             page: args.page,
             pagination: args.pagination,

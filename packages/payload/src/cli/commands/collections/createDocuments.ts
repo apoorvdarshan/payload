@@ -1,7 +1,5 @@
 import path from 'node:path'
 
-import type { PopulateType, SelectType } from '../../../index.js'
-
 import { createDocumentsLocalInputSchema } from '../../../collections/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
 import {
@@ -40,9 +38,9 @@ export const createCreateDocumentsCommand = defineCLICommand({
           locale: args.locale,
           overrideAccess: args.overrideAccess,
           overwriteExistingFiles: args.overwriteExistingFiles,
-          populate: args.populate as PopulateType | undefined,
+          populate: args.populate,
           publishAllLocales: args.publishAllLocales,
-          select: args.select as SelectType | undefined,
+          select: args.select,
           showHiddenFields: args.showHiddenFields,
         })
 

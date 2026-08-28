@@ -1,5 +1,3 @@
-import type { PopulateType, SelectType } from 'payload'
-
 import { findGlobalVersionsInputSchema } from 'payload'
 
 import { defaultAccess } from '../../../defaultAccess.js'
@@ -40,8 +38,8 @@ export const findGlobalVersionsTool = defineGlobalTool({
       ...(fallbackLocale !== undefined ? { fallbackLocale } : {}),
       ...(locale ? { locale } : {}),
       ...(pagination !== undefined ? { pagination } : {}),
-      ...(populate ? { populate: populate as PopulateType } : {}),
-      ...(select ? { select: select as SelectType } : {}),
+      ...(populate ? { populate } : {}),
+      ...(select ? { select } : {}),
       ...(sort ? { sort } : {}),
       ...(where ? { where } : {}),
     })

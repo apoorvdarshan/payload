@@ -1,5 +1,3 @@
-import type { PopulateType } from 'payload'
-
 import { findDistinctInputSchema } from 'payload'
 
 import { defaultAccess } from '../../../defaultAccess.js'
@@ -38,7 +36,7 @@ export const findDistinctTool = defineCollectionTool({
       ...(limit ? { limit } : {}),
       ...(locale ? { locale } : {}),
       ...(page ? { page } : {}),
-      ...(populate ? { populate: populate as PopulateType } : {}),
+      ...(populate ? { populate } : {}),
       ...(sort ? { sort } : {}),
       ...(trash !== undefined ? { trash } : {}),
       ...(where ? { where } : {}),

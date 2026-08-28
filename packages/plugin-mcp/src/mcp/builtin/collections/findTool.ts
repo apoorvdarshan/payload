@@ -1,5 +1,3 @@
-import type { JoinQuery, PopulateType, SelectType } from 'payload'
-
 import { findDocumentsInputSchema } from 'payload'
 
 import { defaultAccess } from '../../../defaultAccess.js'
@@ -55,9 +53,9 @@ export const findDocumentsTool = defineCollectionTool({
           depth,
           overrideAccess: authorizedMCP.overrideAccess,
           req,
-          ...(select && { select: select as SelectType }),
-          ...(populate && { populate: populate as PopulateType }),
-          ...(joins !== undefined && { joins: joins as JoinQuery }),
+          ...(select && { select }),
+          ...(populate && { populate }),
+          ...(joins !== undefined && { joins }),
           ...(locale && { locale }),
           ...(fallbackLocale !== undefined && { fallbackLocale }),
           ...(draft !== undefined && { draft }),
@@ -93,9 +91,9 @@ export const findDocumentsTool = defineCollectionTool({
       overrideAccess: authorizedMCP.overrideAccess,
       page,
       req,
-      ...(select && { select: select as SelectType }),
-      ...(populate && { populate: populate as PopulateType }),
-      ...(joins !== undefined && { joins: joins as JoinQuery }),
+      ...(select && { select }),
+      ...(populate && { populate }),
+      ...(joins !== undefined && { joins }),
       ...(locale && { locale }),
       ...(fallbackLocale !== undefined && { fallbackLocale }),
       ...(draft !== undefined && { draft }),

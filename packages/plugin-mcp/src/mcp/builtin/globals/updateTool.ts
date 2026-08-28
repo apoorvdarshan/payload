@@ -1,5 +1,3 @@
-import type { PopulateType, SelectType } from 'payload'
-
 import {
   getGlobalVirtualFieldNames,
   stripVirtualFields,
@@ -62,7 +60,7 @@ export const updateGlobalTool = defineGlobalTool({
       draft,
       overrideAccess: authorizedMCP.overrideAccess,
       overrideLock,
-      populate: populate as PopulateType | undefined,
+      populate,
       publishAllLocales,
       req,
       unpublishAllLocales,
@@ -75,7 +73,7 @@ export const updateGlobalTool = defineGlobalTool({
       updateOptions.fallbackLocale = fallbackLocale
     }
     if (select) {
-      updateOptions.select = select as SelectType
+      updateOptions.select = select
     }
 
     const result = await payload.updateGlobal(updateOptions)

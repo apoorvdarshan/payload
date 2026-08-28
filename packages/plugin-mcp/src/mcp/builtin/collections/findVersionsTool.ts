@@ -1,5 +1,3 @@
-import type { PopulateType, SelectType } from 'payload'
-
 import { findVersionsInputSchema } from 'payload'
 
 import { defaultAccess } from '../../../defaultAccess.js'
@@ -53,8 +51,8 @@ export const findVersionsTool = defineCollectionTool({
       ...(fallbackLocale !== undefined ? { fallbackLocale } : {}),
       ...(locale ? { locale } : {}),
       ...(pagination !== undefined ? { pagination } : {}),
-      ...(populate ? { populate: populate as PopulateType } : {}),
-      ...(select ? { select: select as SelectType } : {}),
+      ...(populate ? { populate } : {}),
+      ...(select ? { select } : {}),
       ...(sort ? { sort } : {}),
       ...(trash !== undefined ? { trash } : {}),
       ...(where ? { where } : {}),

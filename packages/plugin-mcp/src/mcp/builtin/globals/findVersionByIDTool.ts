@@ -1,5 +1,3 @@
-import type { PopulateType, SelectType } from 'payload'
-
 import { findGlobalVersionByIDInputSchema } from 'payload'
 
 import { defaultAccess } from '../../../defaultAccess.js'
@@ -37,8 +35,8 @@ export const findGlobalVersionByIDTool = defineGlobalTool({
       req,
       ...(fallbackLocale !== undefined ? { fallbackLocale } : {}),
       ...(locale ? { locale } : {}),
-      ...(populate ? { populate: populate as PopulateType } : {}),
-      ...(select ? { select: select as SelectType } : {}),
+      ...(populate ? { populate } : {}),
+      ...(select ? { select } : {}),
     })
 
     return {

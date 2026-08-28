@@ -1,5 +1,3 @@
-import type { PopulateType } from '../../../index.js'
-
 import { findDistinctLocalInputSchema } from '../../../collections/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
 import { parseBoolean, parseJSON, parseSort } from '../data/input.js'
@@ -23,7 +21,7 @@ export const createFindDistinctCommand = defineCLICommand({
       locale: args.locale,
       overrideAccess: args.overrideAccess,
       page: args.page,
-      populate: args.populate as PopulateType | undefined,
+      populate: args.populate,
       showHiddenFields: args.showHiddenFields,
       sort: args.sort,
       trash: args.trash,

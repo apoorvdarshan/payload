@@ -1,7 +1,5 @@
 import path from 'node:path'
 
-import type { Payload, PopulateType, SelectType } from '../../../index.js'
-
 import { updateDocumentLocalInputSchema } from '../../../collections/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
 import {
@@ -29,28 +27,54 @@ export const createUpdateDocumentCommand = defineCLICommand({
   handler: async ({ args, getPayload, isJSON }) => {
     const payload = await getPayload()
     const collection = args.slug
-    const result = await payload.update({
-      id: args.id,
-      collection,
-      data: prepareCollectionData({ collection, data: args.data, payload }),
-      depth: args.depth,
-      draft: args.draft,
-      fallbackLocale: args.fallbackLocale,
-      filePath: args.file ? path.resolve(process.cwd(), args.file) : undefined,
-      limit: args.limit,
-      locale: args.locale,
-      overrideAccess: args.overrideAccess,
-      overrideLock: args.overrideLock,
-      overwriteExistingFiles: args.overwriteExistingFiles,
-      populate: args.populate as PopulateType | undefined,
-      publishAllLocales: args.publishAllLocales,
-      select: args.select as SelectType | undefined,
-      showHiddenFields: args.showHiddenFields,
-      sort: args.sort,
-      trash: args.trash,
-      unpublishAllLocales: args.unpublishAllLocales,
-      where: args.where,
-    } as Parameters<Payload['update']>[0])
+    const data = prepareCollectionData({ collection, data: args.data, payload })
+    let result
+
+    if (args.id !== undefined) {
+      result = await payload.update({
+        id: args.id,
+        collection,
+        data,
+        depth: args.depth,
+        draft: args.draft,
+        fallbackLocale: args.fallbackLocale,
+        filePath: args.file ? path.resolve(process.cwd(), args.file) : undefined,
+        locale: args.locale,
+        overrideAccess: args.overrideAccess,
+        overrideLock: args.overrideLock,
+        overwriteExistingFiles: args.overwriteExistingFiles,
+        populate: args.populate,
+        publishAllLocales: args.publishAllLocales,
+        select: args.select,
+        showHiddenFields: args.showHiddenFields,
+        trash: args.trash,
+        unpublishAllLocales: args.unpublishAllLocales,
+      })
+    } else if (args.where !== undefined) {
+      result = await payload.update({
+        collection,
+        data,
+        depth: args.depth,
+        draft: args.draft,
+        fallbackLocale: args.fallbackLocale,
+        filePath: args.file ? path.resolve(process.cwd(), args.file) : undefined,
+        limit: args.limit,
+        locale: args.locale,
+        overrideAccess: args.overrideAccess,
+        overrideLock: args.overrideLock,
+        overwriteExistingFiles: args.overwriteExistingFiles,
+        populate: args.populate,
+        publishAllLocales: args.publishAllLocales,
+        select: args.select,
+        showHiddenFields: args.showHiddenFields,
+        sort: args.sort,
+        trash: args.trash,
+        unpublishAllLocales: args.unpublishAllLocales,
+        where: args.where,
+      })
+    } else {
+      throw new Error('Either id or where must be provided.')
+    }
 
     if (!isJSON) {
       printJSON(result)

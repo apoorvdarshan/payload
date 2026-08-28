@@ -1,5 +1,3 @@
-import type { PopulateType, SelectType } from '../../../index.js'
-
 import { updateGlobalLocalInputSchema } from '../../../globals/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
 import { parseBoolean, parseFallbackLocale, parseJSON } from '../data/input.js'
@@ -26,9 +24,9 @@ export const createUpdateGlobalCommand = defineCLICommand({
       locale: args.locale,
       overrideAccess: args.overrideAccess,
       overrideLock: args.overrideLock,
-      populate: args.populate as PopulateType | undefined,
+      populate: args.populate,
       publishAllLocales: args.publishAllLocales,
-      select: args.select as SelectType | undefined,
+      select: args.select,
       showHiddenFields: args.showHiddenFields,
       unpublishAllLocales: args.unpublishAllLocales,
     })

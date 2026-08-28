@@ -6,7 +6,7 @@
  */
 import * as z from 'zod/mini'
 
-import type { Where } from '../types/index.js'
+import type { SelectExcludeType, SelectIncludeType, Where } from '../types/index.js'
 
 import { validOperators } from '../types/constants.js'
 import { strictObject } from './zod.js'
@@ -35,9 +35,6 @@ export const fieldSchema = z.string().check(z.minLength(1), z.describe('Field pa
 export const idSchema = z
   .union([z.string().check(z.minLength(1)), z.number()])
   .check(z.describe('Document or version ID.'))
-export const joinsSchema = z
-  .optional(z.union([z.literal(false), z.record(z.string(), z.unknown())]))
-  .check(z.describe('Optional: configure join field queries, or pass false to disable all joins.'))
 export const limitSchema = z
   .optional(z.int().check(z.minimum(1), z.maximum(100)))
   .check(z.describe('Maximum number of results.'))
@@ -57,8 +54,18 @@ export const pageSchema = z.optional(z.int().check(z.minimum(1))).check(z.descri
 export const paginationSchema = z
   ._default(z.boolean(), true)
   .check(z.describe('Enable pagination.'))
+const selectIncludeInputSchema: z.ZodMiniType<SelectIncludeType> = z.lazy(() =>
+  z.record(z.string(), z.union([z.literal(true), selectIncludeInputSchema])),
+)
+
+const selectExcludeInputSchema: z.ZodMiniType<SelectExcludeType> = z.lazy(() =>
+  z.record(z.string(), z.union([z.literal(false), selectExcludeInputSchema])),
+)
+
+const selectInputSchema = z.union([selectIncludeInputSchema, selectExcludeInputSchema])
+
 export const populateSchema = z
-  .optional(z.record(z.string(), z.unknown()))
+  .optional(z.record(z.string(), selectInputSchema))
   .check(
     z.describe(
       'Optional: control which fields to include from populated relationship or upload documents.',
@@ -68,7 +75,7 @@ export const publishAllLocalesSchema = z
   .optional(z.boolean())
   .check(z.describe('Publish all locales.'))
 export const selectSchema = z
-  .optional(z.record(z.string(), z.unknown()))
+  .optional(selectInputSchema)
   .check(
     z.describe(
       'Optional: define exactly which fields you\'d like to return in the response, for example {"title": true}.',
@@ -105,6 +112,27 @@ const whereInputSchema: z.ZodMiniType<Where> = z.lazy(() =>
     whereFieldSchema,
   ),
 )
+
+export const joinsSchema = z
+  .optional(
+    z.union([
+      z.literal(false),
+      z.record(
+        z.string(),
+        z.union([
+          z.literal(false),
+          z.strictObject({
+            count: z.optional(z.boolean()),
+            limit: z.optional(z.number()),
+            page: z.optional(z.number()),
+            sort: z.optional(z.string()),
+            where: z.optional(whereInputSchema),
+          }),
+        ]),
+      ),
+    ]),
+  )
+  .check(z.describe('Optional: configure join field queries, or pass false to disable all joins.'))
 
 export const whereSchema = z
   .optional(whereInputSchema)

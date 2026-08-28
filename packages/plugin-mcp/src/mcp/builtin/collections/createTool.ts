@@ -1,5 +1,3 @@
-import type { PopulateType, SelectType } from 'payload'
-
 import {
   createDocumentsInputSchema,
   getCollectionVirtualFieldNames,
@@ -77,13 +75,13 @@ export const createDocumentsTool = defineCollectionTool({
           depth,
           draft,
           overrideAccess: authorizedMCP.overrideAccess,
-          populate: populate as PopulateType | undefined,
+          populate,
           publishAllLocales,
           req,
           ...(file ? { file } : {}),
           ...(locale ? { locale } : {}),
           ...(fallbackLocale !== undefined ? { fallbackLocale } : {}),
-          ...(select ? { select: select as SelectType } : {}),
+          ...(select ? { select } : {}),
         })
 
         docs.push({ doc: result as Record<string, unknown>, index })

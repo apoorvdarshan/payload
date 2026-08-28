@@ -1,5 +1,3 @@
-import type { PopulateType, SelectType } from 'payload'
-
 import { findGlobalInputSchema } from 'payload'
 
 import { defaultAccess } from '../../../defaultAccess.js'
@@ -42,10 +40,10 @@ export const findGlobalTool = defineGlobalTool({
       findOptions.fallbackLocale = fallbackLocale
     }
     if (select) {
-      findOptions.select = select as SelectType
+      findOptions.select = select
     }
     if (populate) {
-      findOptions.populate = populate as PopulateType
+      findOptions.populate = populate
     }
     const result = await payload.findGlobal(findOptions)
 

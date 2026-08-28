@@ -10,10 +10,10 @@ export const createHelpCommand = defineCLICommand({
   },
   description: 'Display help for Payload commands.',
   handler: ({ args, help, isJSON }) => {
-    const selectedCommand = args.command
+    const commandName = args.command
+    const selectedCommand = commandName
       ? help.commands.find(
-          (command) =>
-            command.name === args.command || command.aliases?.includes(args.command as string),
+          (command) => command.name === commandName || command.aliases?.includes(commandName),
         )
       : undefined
 

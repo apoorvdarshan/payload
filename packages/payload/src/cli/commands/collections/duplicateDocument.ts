@@ -1,5 +1,3 @@
-import type { PopulateType, SelectType } from '../../../index.js'
-
 import { duplicateDocumentLocalInputSchema } from '../../../collections/operations/inputSchemas.js'
 import { defineCLICommand } from '../../defineCLICommand.js'
 import {
@@ -34,8 +32,8 @@ export const createDuplicateDocumentCommand = defineCLICommand({
       fallbackLocale: args.fallbackLocale,
       locale: args.locale,
       overrideAccess: args.overrideAccess,
-      populate: args.populate as PopulateType | undefined,
-      select: args.select as SelectType | undefined,
+      populate: args.populate,
+      select: args.select,
       selectedLocales: args.selectedLocales,
       showHiddenFields: args.showHiddenFields,
     })

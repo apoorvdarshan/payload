@@ -1,5 +1,3 @@
-import type { PopulateType, SelectType } from 'payload'
-
 import { restoreGlobalVersionInputSchema } from 'payload'
 
 import { defaultAccess } from '../../../defaultAccess.js'
@@ -36,8 +34,8 @@ export const restoreGlobalVersionTool = defineGlobalTool({
       req,
       ...(fallbackLocale !== undefined ? { fallbackLocale } : {}),
       ...(locale ? { locale } : {}),
-      ...(populate ? { populate: populate as PopulateType } : {}),
-      ...(select ? { select: select as SelectType } : {}),
+      ...(populate ? { populate } : {}),
+      ...(select ? { select } : {}),
     })
     const resultObject = result as Record<string, unknown>
     const restoredGlobal =

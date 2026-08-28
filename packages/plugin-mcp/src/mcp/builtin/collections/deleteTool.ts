@@ -30,30 +30,17 @@ export const deleteDocumentsTool = defineCollectionTool({
   )
 
   try {
-    if (!id && !where) {
-      return {
-        content: [{ type: 'text', text: 'Error: Either id or where clause must be provided' }],
-      }
-    }
+    if (id !== undefined) {
+      const result = await payload.delete({
+        id,
+        collection: slug,
+        depth,
+        overrideAccess: authorizedMCP.overrideAccess,
+        req,
+        ...(locale && { locale }),
+        ...(fallbackLocale !== undefined && { fallbackLocale }),
+      })
 
-    const deleteOptions: Record<string, unknown> = {
-      collection: slug,
-      depth,
-      overrideAccess: authorizedMCP.overrideAccess,
-      req,
-      ...(locale && { locale }),
-      ...(fallbackLocale !== undefined && { fallbackLocale }),
-    }
-
-    if (id) {
-      deleteOptions.id = id
-    } else {
-      deleteOptions.where = where
-    }
-
-    const result = await payload.delete(deleteOptions as Parameters<typeof payload.delete>[0])
-
-    if (id) {
       return {
         content: [
           {
@@ -65,9 +52,23 @@ export const deleteDocumentsTool = defineCollectionTool({
       }
     }
 
-    const bulkResult = result as { docs?: unknown[]; errors?: unknown[] }
-    const docs = bulkResult.docs || []
-    const errors = bulkResult.errors || []
+    if (where === undefined) {
+      return {
+        content: [{ type: 'text', text: 'Error: Either id or where clause must be provided' }],
+      }
+    }
+
+    const result = await payload.delete({
+      collection: slug,
+      depth,
+      overrideAccess: authorizedMCP.overrideAccess,
+      req,
+      where,
+      ...(locale && { locale }),
+      ...(fallbackLocale !== undefined && { fallbackLocale }),
+    })
+    const docs = result.docs || []
+    const errors = result.errors || []
 
     let responseText = `Document deleted successfully from collection "${slug}"!\nDeleted: ${docs.length} documents\nErrors: ${errors.length}\n---`
     if (docs.length > 0) {

@@ -35,7 +35,7 @@ export const parseJSON = (value: string): unknown => {
   }
 
   try {
-    return JSON.parse(source) as unknown
+    return JSON.parse(source)
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : 'Invalid JSON.')
   }
@@ -55,7 +55,7 @@ export const parseSelectedLocales = (value: string, previous: unknown): string[]
 
 export const parseSort = (value: string, previous: unknown): string | string[] => {
   if (Array.isArray(previous)) {
-    return [...previous, value] as string[]
+    return [...previous.filter((item): item is string => typeof item === 'string'), value]
   }
 
   return typeof previous === 'string' ? [previous, value] : value
